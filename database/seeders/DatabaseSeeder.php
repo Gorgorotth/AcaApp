@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Garage;
+use App\Models\GarageEmail;
+use App\Models\Invoice;
+use App\Models\Mechanic;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,5 +18,19 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        Mechanic::factory(1)->create([
+            'name' => 'Kurbla',
+            'garage_id' => 1,
+            'email' => 'acdc@g.c',
+        ]);
+
+        Garage::factory(1)->create([
+            'name' => 'Yugo',
+            'hourly_rate' => 22.90,
+        ]);
+
+        GarageEmail::factory(10)->create([
+            'garage_id' => 1,
+        ]);
     }
 }
