@@ -3,14 +3,15 @@
     <div x-data="{show: true}"
          x-init="setTimeout(() => show=false, 4000)"
          x-show="show"
-         class="fixed-bottom bg-green-500 rounded-xl bottom-3 right-3">
+         class="bg-success rounded-circle fixed-bottom">
 
         <p class="text-white p-1 mx-2 my-2">{{session()->get('success')}}</p>
     </div>
 
 @elseif(session()->has('error'))
 
-    <div x-data="{show: true}"
+    <div
+            x-data="{show: true}"
          x-init="setTimeout(() => show=false, 4000)"
          x-show="show"
          class="bg-danger rounded-circle fixed-bottom">

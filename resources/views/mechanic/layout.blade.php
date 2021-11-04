@@ -22,7 +22,7 @@
 
 @endauth
 @yield('content')
-{{--<x-session/>--}}
+<x-session/>
 
 <script src="{{mix('js/app.js')}}"></script>
 

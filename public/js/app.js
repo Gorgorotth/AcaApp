@@ -5252,17 +5252,19 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   \*********************************/
 /***/ (() => {
 
-var addPartBtnTimesClicked = 0;
-$('#addPartButton').on('click', addParts);
-$(document).on('click', '.addPartCloseBtn', deletePart);
+var addJobBtnTimesClicked = 0; // $('#add-invoice-part').on('click', addParts);
 
-function addParts() {
-  var addPart = $($('#createInvoicePart').html());
-  addPartBtnTimesClicked += 1;
-  addPart.find('.addPartName').map(function (index, element) {
-    return $(element).attr('name', $(element).attr('name') + "[".concat(addPartBtnTimesClicked, "]"));
+$(document).on('click', '.add-part-close-btn', deletePart);
+$(document).on('click', '.add-invoice-part', addJob);
+
+function addJob() {
+  var chooseTemplate = $(this).attr('data-template');
+  var addJob = $($(chooseTemplate).html());
+  addJobBtnTimesClicked += 1;
+  addJob.find('.add-part-name').map(function (index, element) {
+    return $(element).attr('name', $(element).attr('name') + "[".concat(addJobBtnTimesClicked, "]"));
   });
-  $('#containerLocation').append(addPart);
+  $('#containerLocation').append(addJob);
 }
 
 function deletePart() {

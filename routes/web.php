@@ -19,7 +19,9 @@ Route::group(['prefix' => 'mechanic', 'middleware' => ['auth']], function () {
 
     Route::get('/invoice/createInvoice', [MechanicController::class, 'createInvoice'])->name('mechanic.createInvoice');
 
+    Route::get('/invoice/exportToPdf/{invoiceId}', [MechanicController::class, 'exportPdf'])->name('mechanic.exportInvoiceToPdf');
+
     Route::post('/invoice/storeInvoice', [MechanicController::class, 'storeInvoice'])->name('mechanic.storeInvoice');
 
-    Route::post('/invoice/delete{invoiceId}', [MechanicController::class, 'deleteInvoice'])->name('mechanic.deleteInvoice');
+    Route::post('/invoice/delete/{invoiceId}', [MechanicController::class, 'deleteInvoice'])->name('mechanic.deleteInvoice');
 });

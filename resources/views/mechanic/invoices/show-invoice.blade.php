@@ -58,7 +58,7 @@
                         <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>
                     </ul>
                     <div>
-                        <a class="btn btn-outline-info" href="#">EXPORT TO PDF</a>
+                        <a class="btn btn-outline-info" href="{{route('mechanic.exportInvoiceToPdf', ['invoiceId' => $invoice['id']])}}">EXPORT TO PDF</a>
                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             DELETE INVOICE

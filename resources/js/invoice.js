@@ -1,16 +1,17 @@
+let addJobBtnTimesClicked = 0;
 
-let addPartBtnTimesClicked = 0;
+// $('#add-invoice-part').on('click', addParts);
+$(document).on('click', '.add-part-close-btn', deletePart);
+$(document).on('click', '.add-invoice-part', addJob);
 
-$('#addPartButton').on('click', addParts);
-$(document).on('click', '.addPartCloseBtn', deletePart);
-
-function addParts() {
-    let addPart = $($('#createInvoicePart').html());
-    addPartBtnTimesClicked += 1;
-    addPart.find('.addPartName').map((index, element) => {
-        return $(element).attr('name', $(element).attr('name') + `[${addPartBtnTimesClicked}]`)
+function addJob() {
+    let chooseTemplate = $(this).attr('data-template');
+    let addJob = $($(chooseTemplate).html());
+    addJobBtnTimesClicked += 1;
+    addJob.find('.add-part-name').map((index, element) => {
+        return $(element).attr('name', $(element).attr('name') + `[${addJobBtnTimesClicked}]`)
     });
-    $('#containerLocation').append(addPart);
+    $('#containerLocation').append(addJob);
 }
 
 function deletePart() {
