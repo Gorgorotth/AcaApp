@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Mechanic;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangeMechanicPasswordRequest;
+use App\Http\Requests\EditMechanicProfileRequest;
 use App\Http\Requests\StoreInvoiceRequest;
-use App\Models\Invoice;
+use App\Models\Mechanic;
 use App\Services\Mechanics\InvoiceService;
+use App\Services\Mechanics\MechanicService;
 
 class MechanicController extends Controller
 {
@@ -13,13 +16,15 @@ class MechanicController extends Controller
      * @var InvoiceService
      */
     public $invoiceService;
+    public $mechanicService;
 
     /**
      * @param InvoiceService $invoiceService
      */
-    public function __construct(InvoiceService $invoiceService)
+    public function __construct(InvoiceService $invoiceService, MechanicService $mechanicService)
     {
         $this->invoiceService = $invoiceService;
+        $this->mechanicService = $mechanicService;
     }
 
     /**
@@ -28,8 +33,41 @@ class MechanicController extends Controller
     public function index()
     {
         return view('mechanic.invoices.dashboard', [
-            'invoices' => Invoice::query()->where('garage_id', auth()->user()->garage_id)->get(),
+            'invoices' => $this->invoiceService->dashboard(request()->search, auth()->user()->garage_id),
+            'orderBy' => request()->sortByCreatedDate
         ]);
+    }
+
+    public function editProfile()
+    {
+        $mechanic = Mechanic::find(auth()->id());
+        return view('mechanic.edit-profile', [
+            'name' => $mechanic->name,
+            'email' => $mechanic->email,
+        ]);
+    }
+
+    public function editMechanicProfile(EditMechanicProfileRequest $request)
+    {
+        try {
+            $this->mechanicService->editProfile($request, auth()->id());
+            return back(['messages' => $request->messages()])->with('success', 'Profile updated successfully');
+        } catch (\Exception $e){
+            captureException($e);
+            return back()->with('error', 'Something went wrong');
+        }
+    }
+
+    public function changeMechanicPassword(ChangeMechanicPasswordRequest $request)
+    {
+        try {
+            if ($this->mechanicService->updatePassword($request, auth()->id()))
+            return back()->with('success', 'You successfully update your password');
+            else return back()->with('error', 'Wrong password');
+        } catch (\Exception $e){
+            captureException($e);
+            return back()->with('error', 'Something went wrong');
+        }
     }
 
     /**
@@ -42,6 +80,7 @@ class MechanicController extends Controller
         return view('mechanic.invoices.show-invoice', [
             'invoice' => $invoice['invoice'],
             'invoiceParts' => $invoice['invoiceParts'],
+            'client' => $invoice['client'],
             'mechanicName' => auth()->user()->name,
             'currency' => $invoice['currency'],
         ]);
@@ -66,6 +105,7 @@ class MechanicController extends Controller
             $this->invoiceService->storeInvoice(auth()->user()->garage_id, auth()->id(), $request);
             return redirect(route('home'))->with('success', 'You just create a new invoice');
         } catch (\Exception $e) {
+            captureException($e);
             return redirect(route('home'))->with('error', 'Something went wrong');
         }
     }
@@ -76,6 +116,7 @@ class MechanicController extends Controller
      */
     public function deleteInvoice($invoiceId)
     {
+
         try {
             $this->invoiceService->deleteInvoice($invoiceId, auth()->id());
             return redirect(route('home'))->with('success', 'Invoice Deleted');

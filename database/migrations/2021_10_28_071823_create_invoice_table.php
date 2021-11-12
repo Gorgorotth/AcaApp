@@ -17,6 +17,7 @@ class CreateInvoiceTable extends Migration
             $table->id();
             $table->foreignId('garage_id');
             $table->foreignId('mechanic_id');
+            $table->foreignId('client_id');
             $table->string('vin');
             $table->string('license_plate');
             $table->string('brand');

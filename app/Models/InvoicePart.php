@@ -22,6 +22,22 @@ class InvoicePart extends Model
         'price',
         'job_type',
     ];
+    public function  getConvertedQuantityAttribute()
+    {
+        if ($this->job_type == self::JOB_TYPE_LIQUID) {
+                $convertedQuantity = $this->quantity . ' liters';
+            } elseif ($this->job_type == self::JOB_TYPE_WORK) {
+                $convertedQuantity = $this->quantity . ' hours';
+            } else {
+            $convertedQuantity = $this->quantity;
+        }
+        return $convertedQuantity;
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->price * $this->quantity;
+    }
 
     public function getTypeAttribute()
     {

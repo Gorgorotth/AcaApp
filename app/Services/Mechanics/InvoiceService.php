@@ -2,6 +2,7 @@
 
 namespace App\Services\Mechanics;
 
+use App\Models\Client;
 use App\Models\Garage;
 use App\Models\Invoice;
 use App\Models\InvoicePart;
@@ -12,6 +13,30 @@ use Illuminate\Support\Facades\Storage;
 
 class InvoiceService
 {
+    /**
+     * @param $request
+     * @param $garageId
+     * @param $orderBy
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function dashboard($request, $garageId)
+    {
+        if (!request()->sortByCreatedDate) {
+            request()->sortByCreatedDate = 1;
+        } else {
+            request()->sortByCreatedDate = 0;
+        }
+
+        if ($request) {
+            $invoices = Invoice::query()->where('garage_id', $garageId)->latest()->filter(request(['search']))->paginate(6)->withQueryString();
+        } elseif (request()->sortByCreatedDate == 1) {
+            $invoices = Invoice::query()->where('garage_id', $garageId)->orderByDesc('created_at')->get();
+        } else {
+            $invoices = Invoice::query()->where('garage_id', $garageId)->orderBy('created_at')->get();
+        }
+        return $invoices;
+    }
+
     /**
      * @param $invoiceId
      * @param $authorId
@@ -72,9 +97,16 @@ class InvoiceService
     {
         $totalPrice = 0;
         $garage = Garage::query()->firstWhere('id', $garageId);
+        $client = Client::query()->create([
+            'name' => $request->inputClientName,
+            'last_name' => $request->inputClientLastName,
+            'phone' => $request->inputClientPhone,
+            'email' => $request->inputClientEmail
+        ]);
         $invoice = Invoice::query()->create([
             'garage_id' => $garageId,
             'mechanic_id' => $mechanicId,
+            'client_id' => $client->id,
             'vin' => $request->inputVin,
             'license_plate' => $request->inputPlate,
             'brand' => $request->inputBrand,
@@ -103,6 +135,7 @@ class InvoiceService
         }
         $invoice->total_price = $totalPrice;
         $invoice->save();
+
     }
 
     /**
@@ -129,18 +162,17 @@ class InvoiceService
     {
         $invoice = $this->getInvoice($invoiceId);
         $invoiceParts = $this->getInvoiceParts($invoiceId);
-        foreach ($invoiceParts as $part) {
-            $part['total_price'] = $part['price'] * $part['quantity'];
-            if ($part->job_type == InvoicePart::JOB_TYPE_LIQUID) {
-                $part->quantity = $part->quantity . ' liters';
-            } elseif ($part->job_type == InvoicePart::JOB_TYPE_WORK) {
-                $part->quantity = $part->quantity . ' hours';
-            }
-        }
+        $client = $this->getClient($invoice->client_id);
         return [
             'invoice' => $invoice,
             'invoiceParts' => $invoiceParts,
+            'client' => $client,
             'currency' => trans('garage.currency')
         ];
+    }
+
+    public function getClient($clientId)
+    {
+        return Client::find($clientId);
     }
 }

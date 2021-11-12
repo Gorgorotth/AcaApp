@@ -1,8 +1,8 @@
 @extends('mechanic.layout')
 @section('content')
-    <div class="container my-xl-4 border border-dark">
+    <div class="container my-4 border border-dark">
         <div class="my-4">
-            <div class="row">
+            <div class="row justify-content-between">
                 <div class="col-md-6 col-sm-6 text-left">
                     <h4><strong>Car</strong> Details</h4>
                     <ul class="list-unstyled">
@@ -10,6 +10,15 @@
                         <li><strong>License Plate:</strong> {{$invoice['license_plate']}}</li>
                         <li><strong>Brand:</strong> {{$invoice['brand']}}</li>
                         <li><strong>Model:</strong> {{$invoice['model']}}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 col-sm-6 text-left">
+                    <h4><strong>Owner</strong> Details</h4>
+                    <ul class="list-unstyled">
+                        <li><strong>Name:</strong> {{$client['name']}}</li>
+                        <li><strong>Last Name:</strong> {{$client['last_name']}}</li>
+                        <li><strong>Phone:</strong> {{$client['phone']}}</li>
+                        <li><strong>Email:</strong> {{$client['email']}}</li>
                     </ul>
                 </div>
             </div>
@@ -30,9 +39,9 @@
                                 <div><strong>{{$invoicePart['name']}}</strong></div>
                                 <small>Stock No: {{$invoicePart['stock_no']}}</small>
                             </td>
-                            <td>{{$invoicePart['quantity']}}</td>
+                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
                             <td>{{$invoicePart['price'] . $currency}}</td>
-                            <td>{{$invoicePart['total_price'] . $currency}}</td>
+                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
                         </tr>
                     @endforeach
                     </tbody>

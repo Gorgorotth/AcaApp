@@ -58,7 +58,6 @@
                     {{$invoice['created_at']}}
                 </p>
             </div>
-
             <div class="col text-right">
                 <ul class="list-unstyled">
                     <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>

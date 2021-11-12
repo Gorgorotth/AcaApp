@@ -13,6 +13,12 @@ Route::group(['prefix' => 'mechanic', 'middleware' => ['auth']], function () {
 
     Route::get('/logout', [LoginController::class, 'destroy'])->name('mechanic.logout');
 
+    Route::get('/edit-mechanic', [MechanicController::class, 'editProfile'])->name('mechanic.edit-mechanic');
+
+    Route::post('/edit-mechanic-profile', [MechanicController::class, 'editMechanicProfile'])->name('mechanic.edit-mechanic-profile');
+
+    Route::post('/change-mechanic-password', [MechanicController::class, 'changeMechanicPassword'])->name('mechanic.change-mechanic-password');
+
     Route::get('/dashboard', [MechanicController::class, 'index'])->name('mechanic.dashboard');
 
     Route::get('/invoice/show/{invoiceId}', [MechanicController::class, 'showInvoice'])->name('mechanic.showInvoice');
@@ -24,4 +30,5 @@ Route::group(['prefix' => 'mechanic', 'middleware' => ['auth']], function () {
     Route::post('/invoice/storeInvoice', [MechanicController::class, 'storeInvoice'])->name('mechanic.storeInvoice');
 
     Route::post('/invoice/delete/{invoiceId}', [MechanicController::class, 'deleteInvoice'])->name('mechanic.deleteInvoice');
+
 });

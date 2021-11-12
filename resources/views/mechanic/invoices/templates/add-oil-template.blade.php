@@ -1,5 +1,6 @@
 <template id="create-invoice-oil">
-    <div class="mx-4 row container border w-auto mb-4 pb-4 addPartContainer">
+    <div class="col-md-6 addPartContainer">
+        <div class="my-4 col container border pb-4">
         <div class="row modal-header">
             <h4 class="row" id="partTitle">Add Oil</h4>
             <button type="button" class="mt-3 btn-close add-part-name add-part-close-btn" name="addPartCloseBtn"
@@ -30,6 +31,7 @@
             <input type="hidden" class="add-part-name" name="addPartStockNo">
             <input type="hidden" class="add-part-name" name="addPartType"
                    value="{{\App\Models\InvoicePart::JOB_TYPE_LIQUID}}">
+        </div>
         </div>
     </div>
 </template>

@@ -15,13 +15,14 @@ class CreateMechanicTable extends Migration
     {
         Schema::create('mechanics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('garage_id');
+            $table->foreignId('garage_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

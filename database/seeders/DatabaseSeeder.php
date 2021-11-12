@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\Garage;
 use App\Models\GarageEmail;
 use App\Models\Invoice;
@@ -22,6 +23,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Kurbla',
             'garage_id' => 1,
             'email' => 'acdc@g.c',
+        ]);
+
+        Admin::factory(1)->create([
+            'name' => 'Admin',
+            'email' => 'acdc1@g.c'
         ]);
 
         Garage::factory(1)->create([
