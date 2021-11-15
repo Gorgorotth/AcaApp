@@ -16,6 +16,9 @@ class MechanicController extends Controller
      * @var InvoiceService
      */
     public $invoiceService;
+    /**
+     * @var MechanicService
+     */
     public $mechanicService;
 
     /**
@@ -38,6 +41,9 @@ class MechanicController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function editProfile()
     {
         $mechanic = Mechanic::find(auth()->id());
@@ -47,17 +53,25 @@ class MechanicController extends Controller
         ]);
     }
 
+    /**
+     * @param EditMechanicProfileRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function editMechanicProfile(EditMechanicProfileRequest $request)
     {
         try {
             $this->mechanicService->editProfile($request, auth()->id());
-            return back(['messages' => $request->messages()])->with('success', 'Profile updated successfully');
+            return back()->with('success', 'Profile updated successfully');
         } catch (\Exception $e){
             captureException($e);
             return back()->with('error', 'Something went wrong');
         }
     }
 
+    /**
+     * @param ChangeMechanicPasswordRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function changeMechanicPassword(ChangeMechanicPasswordRequest $request)
     {
         try {
@@ -76,13 +90,13 @@ class MechanicController extends Controller
      */
     public function showInvoice($invoiceId)
     {
-        $invoice = $this->invoiceService->showInvoice($invoiceId);
+        $invoice = $this->invoiceService->getInvoice($invoiceId);
         return view('mechanic.invoices.show-invoice', [
-            'invoice' => $invoice['invoice'],
-            'invoiceParts' => $invoice['invoiceParts'],
-            'client' => $invoice['client'],
+            'invoice' => $invoice,
+            'invoiceParts' => $this->invoiceService->getInvoiceParts($invoiceId),
+            'client' => $this->invoiceService->getClient($invoice['client_id']),
             'mechanicName' => auth()->user()->name,
-            'currency' => $invoice['currency'],
+            'currency' => $this->invoiceService->getCurrency(),
         ]);
     }
 
@@ -92,7 +106,7 @@ class MechanicController extends Controller
     public function createInvoice()
     {
         return view('mechanic.invoices.create', [
-            'currency' => trans('garage.currency'),
+            'currency' => $this->invoiceService->getCurrency(),
         ]);
     }
 
@@ -103,10 +117,10 @@ class MechanicController extends Controller
     {
         try {
             $this->invoiceService->storeInvoice(auth()->user()->garage_id, auth()->id(), $request);
-            return redirect(route('home'))->with('success', 'You just create a new invoice');
+            return redirect(route('mechanic.dashboard'))->with('success', 'You just create a new invoice');
         } catch (\Exception $e) {
             captureException($e);
-            return redirect(route('home'))->with('error', 'Something went wrong');
+            return redirect(route('mechanic.dashboard'))->with('error', 'Something went wrong');
         }
     }
 
@@ -119,7 +133,7 @@ class MechanicController extends Controller
 
         try {
             $this->invoiceService->deleteInvoice($invoiceId, auth()->id());
-            return redirect(route('home'))->with('success', 'Invoice Deleted');
+            return redirect(route('mechanic.dashboard'))->with('success', 'Invoice Deleted');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong');
         }
@@ -133,7 +147,7 @@ class MechanicController extends Controller
     {
         try {
             $this->invoiceService->exportInvoiceToPdf($invoiceId);
-            return redirect(route('home'))->with('success', 'You successfully exported invoice file to Pdf');
+            return redirect(route('mechanic.dashboard'))->with('success', 'You successfully exported invoice file to Pdf');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong');
         }

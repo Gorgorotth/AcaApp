@@ -5214,6 +5214,7 @@ var dataArray = {
 $(document).on('click', '.add-to-garage-close-btn', removeFromGarage);
 $(document).on('click', '.add-item-to-garage', addItemToGarage);
 $(document).on('click', '#create-mechanic-submit-btn', checkCreateMechanicPassword);
+$(document).on('click', '#show-deleted-emails', showDeletedEmails);
 
 function checkCreateMechanicPassword(e) {
   e.preventDefault();
@@ -5249,6 +5250,16 @@ function addItemToGarage() {
   });
   var target = $(this).attr('data-target');
   $(target).append(addItem);
+}
+
+function showDeletedEmails() {
+  var target = $(this).attr('data-target');
+
+  if ($(this).is(':checked')) {
+    $(target).show();
+  } else {
+    $(target).hide();
+  }
 }
 
 function removeFromGarage() {
@@ -5314,13 +5325,37 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ (() => {
 
 var addJobBtnTimesClicked = 0;
-$(document).on('click', '.add-part-close-btn', deletePart);
-$(document).on('click', '.session-close-button', deleteSession);
-$(document).on('click', '.add-invoice-part', addJob);
+$(function () {
+  $(document).on('click', '.add-part-close-btn', deletePart);
+  $(document).on('click', '.add-invoice-part', addJob);
+  sessionSuccess();
+  sessionError();
+  sessionCatchExceptionMessage();
+});
 
-window.onload = function (event) {
-  setTimeout(destroySession, 5000);
-};
+function sessionSuccess() {
+  var message = $('#session-success').val();
+
+  if (message) {
+    toastr.success(message);
+  }
+}
+
+function sessionError() {
+  var message = $('#session-custom-error').val();
+
+  if (message) {
+    toastr.error(message);
+  }
+}
+
+function sessionCatchExceptionMessage() {
+  var message = $('.session-catch-exception').val();
+
+  if (message) {
+    toastr.error(message);
+  }
+}
 
 function addJob() {
   var chooseTemplate = $(this).attr('data-template');
@@ -5335,21 +5370,6 @@ function addJob() {
 function deletePart() {
   $(this).closest('.addPartContainer').remove();
 }
-
-function destroySession() {
-  $('.close-session-message-output').remove();
-}
-
-function deleteSession() {
-  $(this).closest('.close-session-message-output').remove();
-} // $('#create-invoice').on('submit', throwErrors);
-// function throwErrors()
-// {
-//     let error = $('.error');
-//     error.map((err, message)=>{
-//         return toastr.error(message.val());
-//     })
-// }
 
 /***/ }),
 

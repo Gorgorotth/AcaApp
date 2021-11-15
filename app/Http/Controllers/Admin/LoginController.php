@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginStoreRequest;
 use App\Services\Admin\LoginService;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {

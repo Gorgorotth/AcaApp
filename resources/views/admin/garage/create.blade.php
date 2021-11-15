@@ -32,21 +32,21 @@
                                        required>
                             </div>
                         </div>
-                        <div id="add-garage-email-here" class="border-top">
+                        <div class="add-garage-email-here border-top">
 
                         </div>
-                        <div id="add-garage-mechanic-here" class="border-top border-bottom">
+                        <div class="add-garage-mechanic-here border-top border-bottom">
 
                         </div>
                         <div class="my-5">
                             <button id="add-email-to-garage" data-template="#add-garage-email"
-                                    data-target="#add-garage-email-here" data-times-clicked="addEmailBtnTimesClicked"
+                                    data-target=".add-garage-email-here" data-times-clicked="addEmailBtnTimesClicked"
                                     type="button"
                                     class="btn btn-outline-primary add-item-to-garage">
                                 Add Email
                             </button>
                             <button id="add-mechanic-to-garage" data-template="#add-garage-mechanic"
-                                    data-target="#add-garage-mechanic-here"
+                                    data-target=".add-garage-mechanic-here"
                                     data-times-clicked="addMechanicBtnTimesClicked" type="button"
                                     class="btn btn-outline-primary add-item-to-garage">
                                 Add Mechanic
@@ -56,8 +56,6 @@
                         @include('admin.templates.add-mechanic-template')
                         <button class="btn btn-primary" id="create-garage" type="submit">Create Garage</button>
                     </form>
-                    <input type="hidden" value="errore" class="error">
-                    <input type="hidden" value="creole" class="error">
                 </div>
             </div>
         </div>

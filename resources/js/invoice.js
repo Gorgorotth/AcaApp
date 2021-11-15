@@ -1,11 +1,35 @@
 let addJobBtnTimesClicked = 0;
 
-$(document).on('click', '.add-part-close-btn', deletePart);
-$(document).on('click', '.session-close-button', deleteSession);
-$(document).on('click', '.add-invoice-part', addJob);
+$(function () {
+    $(document).on('click', '.add-part-close-btn', deletePart);
+    $(document).on('click', '.add-invoice-part', addJob);
+    sessionSuccess();
+    sessionError();
+    sessionCatchExceptionMessage();
+})
 
-window.onload = (event) => {
-        setTimeout(destroySession, 5000);
+function sessionSuccess()
+{
+    let message = $('#session-success').val();
+    if (message){
+        toastr.success(message);
+    }
+}
+
+function sessionError()
+{
+    let message = $('#session-custom-error').val();
+    if (message){
+        toastr.error(message);
+    }
+}
+
+function sessionCatchExceptionMessage()
+{   let message = $('.session-catch-exception').val() ;
+    if (message)
+    {
+        toastr.error(message);
+    }
 }
 
 function addJob()
@@ -24,24 +48,4 @@ function deletePart()
     $(this).closest('.addPartContainer').remove();
 
 }
-
-function destroySession(){
-    $('.close-session-message-output').remove();
-}
-
-function deleteSession()
-{
-    $(this).closest('.close-session-message-output').remove();
-
-}
-
-// $('#create-invoice').on('submit', throwErrors);
-
-// function throwErrors()
-// {
-//     let error = $('.error');
-//     error.map((err, message)=>{
-//         return toastr.error(message.val());
-//     })
-// }
 

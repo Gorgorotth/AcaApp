@@ -24,7 +24,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a href="{{route('admin.create-garage')}}" class="dropdown-item">Create</a></li>
-                            <li><a href="#" class="dropdown-item">Edit/Delete</a></li>
+                            <li><a href="{{route('admin.garage-dashboard')}}" class="dropdown-item">Dashboard</a></li>
                         </ul>
                     </div>
                 </li>
@@ -34,13 +34,12 @@
                                 aria-expanded="false">
                             Mechanic
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu text-end">
                             <li><a href="{{route('admin.create-mechanic')}}" class="dropdown-item">Create</a></li>
-                            <li><a href="{{route('admin.mechanic-dashboard')}}" class="dropdown-item">Edit/Delete</a></li>
+                            <li><a href="{{route('admin.mechanic-dashboard')}}" class="dropdown-item">Dashboard</a>
+                            </li>
                         </ul>
                     </div>
-                </li>
-{{--                <li class="nav-item"><a href="{{route('admin.create-mechanic')}}" class="nav-link">Create Mechanic</a>--}}
                 </li>
                 <li class="nav-item"><a href="{{route('admin.logout')}}" class="nav-link">Log Out</a></li>
             </ul>

@@ -8,6 +8,10 @@ use App\Models\InvoicePart;
 
 class InvoiceService
 {
+    /**
+     * @param $request
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function adminDashboard($request)
     {
         $invoices = Invoice::query();
@@ -27,29 +31,37 @@ class InvoiceService
         return $invoices->paginate(6);
     }
 
-    public function showInvoice($invoiceId): array
+
+    /**
+     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|string|null
+     */
+    public function getCurrency()
     {
-        $invoice = $this->getInvoice($invoiceId);
-        $invoiceParts = $this->getInvoiceParts($invoiceId);
-        $client = $this->getClient($invoice->client_id);
-        return [
-            'invoice' => $invoice,
-            'invoiceParts' => $invoiceParts,
-            'client' => $client,
-            'currency' => trans('garage.currency')
-        ];
+        return trans('garage.currency');
     }
 
+    /**
+     * @param $invoiceId
+     * @return mixed
+     */
     public function getInvoice($invoiceId)
     {
         return Invoice::find($invoiceId);
     }
 
+    /**
+     * @param $invoiceId
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function getInvoiceParts($invoiceId)
     {
         return InvoicePart::query()->where('invoice_id', $invoiceId)->get();
     }
 
+    /**
+     * @param $clientId
+     * @return mixed
+     */
     public function getClient($clientId)
     {
         return Client::find($clientId);

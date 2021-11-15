@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\InvoicePart;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -28,7 +29,8 @@ class InvoiceService
         }
 
         if ($request) {
-            $invoices = Invoice::query()->where('garage_id', $garageId)->latest()->filter(request(['search']))->paginate(6)->withQueryString();
+            $invoices = Invoice::query()->where('garage_id',
+                $garageId)->latest()->filter(request(['search']))->paginate(6)->withQueryString();
         } elseif (request()->sortByCreatedDate == 1) {
             $invoices = Invoice::query()->where('garage_id', $garageId)->orderByDesc('created_at')->get();
         } else {
@@ -44,15 +46,21 @@ class InvoiceService
      */
     public function deleteInvoice($invoiceId, $authorId): bool
     {
-        $invoice = $this->getInvoice($invoiceId);
-        if ($this->checkAuthor($invoice, $authorId)) {
-            $invoice->delete();
-            $invoiceParts = $this->getInvoiceParts($invoiceId);
-            foreach ($invoiceParts as $part) {
-                $part->delete();
+        try {
+            DB::beginTransaction();
+            $invoice = $this->getInvoice($invoiceId);
+            if ($this->checkAuthor($invoice, $authorId)) {
+                $invoice->delete();
+                $invoiceParts = $this->getInvoiceParts($invoiceId);
+                foreach ($invoiceParts as $part) {
+                    $part->delete();
+                }
+                DB::commit();
+                return true;
             }
-            return true;
-        } else {
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
             return false;
         }
     }
@@ -95,47 +103,53 @@ class InvoiceService
      */
     public function storeInvoice($garageId, $mechanicId, $request)
     {
-        $totalPrice = 0;
-        $garage = Garage::query()->firstWhere('id', $garageId);
-        $client = Client::query()->create([
-            'name' => $request->inputClientName,
-            'last_name' => $request->inputClientLastName,
-            'phone' => $request->inputClientPhone,
-            'email' => $request->inputClientEmail
-        ]);
-        $invoice = Invoice::query()->create([
-            'garage_id' => $garageId,
-            'mechanic_id' => $mechanicId,
-            'client_id' => $client->id,
-            'vin' => $request->inputVin,
-            'license_plate' => $request->inputPlate,
-            'brand' => $request->inputBrand,
-            'model' => $request->inputModel,
-            'total_price' => 123,
-            'hourly_price' => $garage->hourly_rate,
-        ]);
-
-        foreach ($request->addPartName as $i => $part) {
-            $quantity = $request->addPartQuantity[$i];
-
-            if ($request->addPartType[$i] == InvoicePart::JOB_TYPE_WORK) {
-                $addPrice = $garage->hourly_rate;
-            } else {
-                $addPrice = $request->addPartPrice[$i];
-            }
-            InvoicePart::query()->create([
-                'invoice_id' => $invoice->id,
-                'name' => $request->addPartName[$i],
-                'stock_no' => $request->addPartStockNo[$i],
-                'quantity' => $quantity,
-                'price' => $addPrice,
-                'job_type' => $request->addPartType[$i]
+        try {
+            DB::beginTransaction();
+            $totalPrice = 0;
+            $garage = Garage::query()->firstWhere('id', $garageId);
+            $client = Client::query()->create([
+                'name' => $request->inputClientName,
+                'last_name' => $request->inputClientLastName,
+                'phone' => $request->inputClientPhone,
+                'email' => $request->inputClientEmail
             ]);
-            $totalPrice += $addPrice * $quantity;
-        }
-        $invoice->total_price = $totalPrice;
-        $invoice->save();
+            $invoice = Invoice::query()->create([
+                'garage_id' => $garageId,
+                'mechanic_id' => $mechanicId,
+                'client_id' => $client->id,
+                'vin' => $request->inputVin,
+                'license_plate' => $request->inputPlate,
+                'brand' => $request->inputBrand,
+                'model' => $request->inputModel,
+                'total_price' => 123,
+                'hourly_price' => $garage->hourly_rate,
+            ]);
 
+            foreach ($request->addPartName as $i => $part) {
+                $quantity = $request->addPartQuantity[$i];
+
+                if ($request->addPartType[$i] == InvoicePart::JOB_TYPE_WORK) {
+                    $addPrice = $garage->hourly_rate;
+                } else {
+                    $addPrice = $request->addPartPrice[$i];
+                }
+                InvoicePart::query()->create([
+                    'invoice_id' => $invoice->id,
+                    'name' => $request->addPartName[$i],
+                    'stock_no' => $request->addPartStockNo[$i],
+                    'quantity' => $quantity,
+                    'price' => $addPrice,
+                    'job_type' => $request->addPartType[$i]
+                ]);
+                $totalPrice += $addPrice * $quantity;
+            }
+            $invoice->total_price = $totalPrice;
+            $invoice->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
+        }
     }
 
     /**
@@ -143,34 +157,29 @@ class InvoiceService
      */
     public function exportInvoiceToPdf($invoiceId)
     {
-        $invoice = $this->showInvoice($invoiceId);
+        $invoice = $this->getInvoice($invoiceId);
         $data = [
-            'invoice' => $invoice['invoice'],
-            'invoiceParts' => $invoice['invoiceParts'],
+            'invoice' => $invoice,
+            'invoiceParts' => $this->getInvoiceParts($invoiceId),
             'mechanicName' => auth()->user()->name,
-            'currency' => $invoice['currency'],
+            'currency' => $this->getCurrency(),
         ];
         $pdf = PDF::loadView('mechanic.invoices.exportPdf', $data);
-        Storage::disk('public')->put('invoice: ' . $invoice['invoice']['license_plate'] . '.pdf', $pdf->output());
+        Storage::disk('public')->put('invoice: ' . $invoice['license_plate'] . '.pdf', $pdf->output());
     }
 
     /**
-     * @param $invoiceId
-     * @return array
+     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|string|null
      */
-    public function showInvoice($invoiceId): array
+    public function getCurrency()
     {
-        $invoice = $this->getInvoice($invoiceId);
-        $invoiceParts = $this->getInvoiceParts($invoiceId);
-        $client = $this->getClient($invoice->client_id);
-        return [
-            'invoice' => $invoice,
-            'invoiceParts' => $invoiceParts,
-            'client' => $client,
-            'currency' => trans('garage.currency')
-        ];
+        return trans('garage.currency');
     }
 
+    /**
+     * @param $clientId
+     * @return mixed
+     */
     public function getClient($clientId)
     {
         return Client::find($clientId);

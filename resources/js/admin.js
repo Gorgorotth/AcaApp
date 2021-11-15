@@ -6,8 +6,10 @@ let dataArray = {
 $(document).on('click', '.add-to-garage-close-btn', removeFromGarage);
 $(document).on('click', '.add-item-to-garage', addItemToGarage);
 $(document).on('click', '#create-mechanic-submit-btn', checkCreateMechanicPassword);
+$(document).on('click', '#show-deleted-emails', showDeletedEmails);
 
-function checkCreateMechanicPassword(e) {
+function checkCreateMechanicPassword(e)
+{
     e.preventDefault();
     let name = $('#create-mechanic-name');
     let email = $('#create-mechanic-email');
@@ -31,7 +33,8 @@ function checkCreateMechanicPassword(e) {
     }
 }
 
-function addItemToGarage() {
+function addItemToGarage()
+{
     let chooseTemplate = $(this).attr('data-template');
     let addItem = $($(chooseTemplate).html());
     let clicked = dataArray[$(this).attr('data-times-clicked')] += 1;
@@ -42,6 +45,17 @@ function addItemToGarage() {
     $(target).append(addItem);
 }
 
-function removeFromGarage() {
+function showDeletedEmails()
+{
+    let target = $(this).attr('data-target');
+    if ($(this).is(':checked')){
+       $(target).show();
+    }else {
+        $(target).hide();
+    }
+}
+
+function removeFromGarage()
+{
     $(this).closest('.deleteContent').remove();
 }

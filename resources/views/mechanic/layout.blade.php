@@ -5,24 +5,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="{{mix('css/app.css')}}" rel="stylesheet">
-
 </head>
 <body>
 @auth()
-
     <header class="border-bottom">
-
         <div class="container">
             <ul class="nav nav-pills justify-content-between  py-2">
                 <li class="nav-item"><a href="{{route('mechanic.dashboard')}}" class="nav-link">Dashboard</a></li>
-                <li class="nav-item"><a href="{{route('mechanic.createInvoice')}}" class="nav-link">Create Invoice</a></li>
-                <li class="nav-item"><a href="{{route('mechanic.edit-mechanic')}}" class="nav-link">Edit Profile</a></li>
+                <li class="nav-item"><a href="{{route('mechanic.createInvoice')}}" class="nav-link">Create Invoice</a>
+                </li>
+                <li class="nav-item"><a href="{{route('mechanic.edit-mechanic')}}" class="nav-link">Edit Profile</a>
+                </li>
                 <li class="nav-item"><a href="{{route('mechanic.logout')}}" class="nav-link">Log Out</a></li>
             </ul>
         </div>
     </header>
-
-
 @endauth
 @yield('content')
 <x-session/>

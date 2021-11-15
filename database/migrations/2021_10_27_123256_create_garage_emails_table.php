@@ -18,6 +18,7 @@ class CreateGarageEmailsTable extends Migration
             $table->string('email')->unique();
             $table->foreignId('garage_id');
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

@@ -34,16 +34,15 @@ class UpdateMechanicRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['nullable', 'min:3', 'max:20'],
+            'name' => ['required', 'min:3', 'max:20'],
             'email' => ['nullable', 'email', Rule::unique('mechanics', 'email')],
             'garage' => ['nullable', Rule::exists('garages', 'id')]
         ];
     }
 
-
     public function prepareGarage()
     {
-        $mechanicId = session()->get('mechanicId');
+        $mechanicId = request()->mechanicId;
         $garageId = $this->request->get('garage');
         if ($garageId && $garageId != -1){
             if (Mechanic::query()->where('id', $mechanicId)->where('garage_id', $garageId)->exists()){
@@ -51,17 +50,16 @@ class UpdateMechanicRequest extends FormRequest
                 return null;
             }else return $garageId;
         }else return null;
-
     }
+
     public function prepareEmail()
     {
-        $mechanicId = session()->get('mechanicId');
+        $mechanicId = request()->mechanicId;
         if ($email = $this->request->get('email')){
             if (Mechanic::query()->where('id', $mechanicId)->where('email', $email)->exists()){
                 unset($email);
                 return null;
             }else return $email;
         }else return null;
-
     }
 }

@@ -5,7 +5,7 @@
         <div class="col-sm-9">
             <select class="form-select add-to-garage" name="addMechanicToGarage" id="garage-mechanic" required>
                 <option>---Select Mechanic---</option>
-               @foreach($mechanics as $mechanic)
+               @foreach($unemployedMechanics as $mechanic)
                 <option value="{{$mechanic->id}}">{{$mechanic->name}}</option>
                 @endforeach
             </select>

@@ -1,5 +1,5 @@
 <form method="post"
-      action="{{route('admin.mechanic-delete', ['mechanicId' => $mechanic->id])}}">
+      action="{{route('admin.garage-delete', ['garageId' => $garage->id])}}">
     @csrf
     <div class="modal fade" id="deleteModal{{$key}}" tabindex="-1"
          aria-labelledby="deleteModal{{$key}}"
@@ -7,14 +7,14 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Mechanic</h5>
+                    <h5 class="modal-title">Delete Garage</h5>
                     <button type="button" class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger text-center">
-                        DELETE MECHANIC???
+                        DELETE GARAGE???
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreGarageRequest;
 use App\Services\Admin\GarageService;
 use App\Services\Admin\InvoiceService;
 use App\Services\Admin\MechanicService;
@@ -14,7 +13,13 @@ class AdminController extends Controller
      * @var InvoiceService
      */
     public $invoiceService;
+    /**
+     * @var MechanicService
+     */
     public $mechanicService;
+    /**
+     * @var GarageService
+     */
     public $garageService;
 
     /**
@@ -27,36 +32,25 @@ class AdminController extends Controller
         $this->garageService = $garageService;
     }
 
-    public function createGarage()
-    {
-        return view('admin.garage.create',[
-            'mechanics' => $this->mechanicService->getUnemployedMechanics()
-        ]);
-    }
-
+    /**
+     * @param $invoiceId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function showInvoice($invoiceId)
     {
-        $invoice = $this->invoiceService->showInvoice($invoiceId);
+        $invoice = $this->invoiceService->getInvoice($invoiceId);
         return view('admin.show-invoice', [
-            'invoice' => $invoice['invoice'],
-            'invoiceParts' => $invoice['invoiceParts'],
-            'client' => $invoice['client'],
+            'invoice' => $invoice,
+            'invoiceParts' => $this->invoiceService->getInvoiceParts($invoiceId),
+            'client' => $this->invoiceService->getClient($invoice['client_id']),
             'mechanicName' => auth()->user()->name,
-            'currency' => $invoice['currency'],
+            'currency' => $this->invoiceService->getCurrency(),
         ]);
     }
 
-    public function storeGarage(StoreGarageRequest $request)
-    {
-        try {
-            $this->garageService->storeGarage($request);
-            return redirect(route('admin.dashboard'))->with('success', 'Garage Created');
-        }catch (\Exception $e){
-            captureException($e);
-            return back()->with('error', 'Something went wrong');
-        }
-    }
-
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index()
     {
         return view('admin.dashboard',[

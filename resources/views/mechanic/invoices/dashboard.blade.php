@@ -1,6 +1,5 @@
 @extends('mechanic.layout')
 @section('content')
-
     <div class="container">
         <div class="list-group">
             <div class="row justify-content-between my-4">
@@ -64,5 +63,4 @@
             </div>
         </div>
     </div>
-
 @endsection

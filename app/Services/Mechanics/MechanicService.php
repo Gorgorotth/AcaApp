@@ -4,19 +4,11 @@ namespace App\Services\Mechanics;
 
 use App\Http\Requests\EditMechanicProfileRequest;
 use App\Models\Mechanic;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class MechanicService
 {
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function getMechanic($id)
-    {
-        return Mechanic::find($id);
-    }
-
     /**
      * @param $request
      * @param $mechanicId
@@ -24,19 +16,30 @@ class MechanicService
      */
     public function editProfile($request, $mechanicId): bool
     {
+
         $mechanic = $this->getMechanic($mechanicId);
-        if (!Hash::check($request->password, $mechanic->password)) {
-            return false;
-        } elseif (!$request->email) {
-            $mechanic->name = $request->name;
-            $mechanic->save();
-            return true;
-        } else {
-            $mechanic->name = $request->name;
-            $mechanic->email = $request->email;
-            $mechanic->save();
-            return true;
-        }
+
+            if (!Hash::check($request->password, $mechanic->password)) {
+                return false;
+            } elseif (!$request->email) {
+                $mechanic->name = $request->name;
+                $mechanic->save();
+                return true;
+            } else {
+                $mechanic->name = $request->name;
+                $mechanic->email = $request->email;
+                $mechanic->save();
+                return true;
+            }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getMechanic($id)
+    {
+        return Mechanic::find($id);
     }
 
     /**
