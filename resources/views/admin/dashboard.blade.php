@@ -23,7 +23,7 @@
                                 Date
                             </th>
                             <th class="col-md-2">
-                                Invoice #
+                                Invoice No
                             </th>
                             <th class="col-md-2">
                                 VIN
@@ -43,7 +43,7 @@
                                     {{$invoice['created_at']}}
                                 </th>
                                 <th>
-                                    //Invoice number\\
+                                    {{$invoice['invoice_number']}}
                                 </th>
                                 <th>
                                     {{$invoice['vin']}}

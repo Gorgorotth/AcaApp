@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Garage;
 use App\Models\Mechanic;
 use Illuminate\Support\Facades\DB;
 
@@ -35,21 +34,53 @@ class MechanicService
 
     /**
      * @param $request
+     * @param $model
+     * @return mixed
+     */
+    public function dashboard($request, $model)
+    {
+        $data = $model::query();
+        if (!request()->sortByCreatedDate) {
+            request()->sortByCreatedDate = 1;
+        } else {
+            request()->sortByCreatedDate = 0;
+        }
+
+        if ($request) {
+            $data->filter(request(['search']));
+        }
+
+        if (request()->sortByCreatedDate == 1) {
+            $data = $data->orderByDesc('created_at');
+        } else {
+            if (request()->sortByCreatedDate == 0) {
+                $data = $data->orderBy('created_at');
+            } else {
+                $data = $data->latest();
+            }
+        }
+        return $data->paginate(6);
+    }
+
+    /**
+     * @param $request
      */
     public function storeMechanic($request)
     {
         try {
-        DB::beginTransaction();
-        Mechanic::query()->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password
-        ]);
-        DB::commit();
-        }catch (\Exception $e) {
+            DB::beginTransaction();
+            Mechanic::query()->create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password
+            ]);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
             DB::rollBack();
             captureException($e);
         }
+        return false;
     }
 
     /**
@@ -60,20 +91,25 @@ class MechanicService
     {
         try {
             DB::beginTransaction();
-        if ($request->email) {
-            Mechanic::query()->where('id', $mechanicId)->update(['name' => $request->name, 'email' => $request->email]);
-        }else {
-            Mechanic::query()->where('id', $mechanicId)->update(['name' => $request->name]);
-        }
+            if ($request->email) {
+                Mechanic::query()->where('id', $mechanicId)->update([
+                    'name' => $request->name,
+                    'email' => $request->email
+                ]);
+            } else {
+                Mechanic::query()->where('id', $mechanicId)->update(['name' => $request->name]);
+            }
 
-        if ($request->garage) {
-            Mechanic::query()->where('id', $mechanicId)->update(['garage_id' => $request->garage]);
-        }
-        DB::commit();
-        }catch (\Exception $e){
+            if ($request->garage) {
+                Mechanic::query()->where('id', $mechanicId)->update(['garage_id' => $request->garage]);
+            }
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
     /**
@@ -81,6 +117,11 @@ class MechanicService
      */
     public function deleteMechanic($mechanicId)
     {
-        Mechanic::find($mechanicId)->delete();
+        try {
+            return Mechanic::query()->find($mechanicId)->delete();
+        } catch (\Exception $e) {
+            captureException($e);
+        }
+        return false;
     }
 }

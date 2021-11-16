@@ -8,13 +8,22 @@ use App\Services\Mechanics\LoginService;
 
 class LoginController extends Controller
 {
+    /**
+     * @var LoginService
+     */
     public $loginService;
 
+    /**
+     * @param LoginService $loginService
+     */
     public function __construct(LoginService $loginService)
     {
         $this->loginService = $loginService;
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function index()
     {
         if ($this->loginService->checkIfLoggedIn() == false) {
@@ -24,6 +33,10 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * @param LoginStoreRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function store(LoginStoreRequest $request)
     {
         if ($this->loginService->store($request)) {
@@ -33,6 +46,9 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function destroy()
     {
         auth()->logout();

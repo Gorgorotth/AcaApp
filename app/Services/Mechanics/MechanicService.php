@@ -2,7 +2,6 @@
 
 namespace App\Services\Mechanics;
 
-use App\Http\Requests\EditMechanicProfileRequest;
 use App\Models\Mechanic;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -17,20 +16,27 @@ class MechanicService
     public function editProfile($request, $mechanicId): bool
     {
 
-        $mechanic = $this->getMechanic($mechanicId);
+        try {
+            DB::beginTransaction();
+            $mechanic = $this->getMechanic($mechanicId);
+            if (Hash::check($request->password, $mechanic->password)) {
+                if (!$request->email) {
+                    $mechanic->name = $request->name;
+                    $mechanic->save();
 
-            if (!Hash::check($request->password, $mechanic->password)) {
-                return false;
-            } elseif (!$request->email) {
-                $mechanic->name = $request->name;
-                $mechanic->save();
-                return true;
-            } else {
-                $mechanic->name = $request->name;
-                $mechanic->email = $request->email;
-                $mechanic->save();
-                return true;
+                } else {
+                    $mechanic->name = $request->name;
+                    $mechanic->email = $request->email;
+                    $mechanic->save();
+                }
             }
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
+        }
+        return false;
     }
 
     /**
@@ -49,14 +55,19 @@ class MechanicService
      */
     public function updatePassword($request, $mechanicId): bool
     {
-
-        $mechanic = $this->getMechanic($mechanicId);
-        if (!Hash::check($request->currentPassword, $mechanic->password)){
-            return false;
-        } else{
-            $mechanic->password = $request->newPassword;
-            $mechanic->save();
+        try {
+            DB::beginTransaction();
+            $mechanic = $this->getMechanic($mechanicId);
+            if (Hash::check($request->currentPassword, $mechanic->password)) {
+                $mechanic->password = $request->newPassword;
+                $mechanic->save();
+            }
+            DB::commit();
             return true;
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
         }
+        return false;
     }
 }

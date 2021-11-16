@@ -61,8 +61,8 @@ class InvoiceService
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
-            return false;
         }
+        return false;
     }
 
     /**
@@ -101,7 +101,7 @@ class InvoiceService
      * @param $garageId
      * @param $mechanicId
      */
-    public function storeInvoice($garageId, $mechanicId, $request)
+    public function storeInvoice($garageId, $mechanicId, $request): bool
     {
         try {
             DB::beginTransaction();
@@ -144,28 +144,37 @@ class InvoiceService
                 $totalPrice += $addPrice * $quantity;
             }
             $invoice->total_price = $totalPrice;
+            $invoice->invoice_number = 'INV---' . $invoice->id;
             $invoice->save();
             DB::commit();
+            return true;
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
     /**
      * @param $invoiceId
      */
-    public function exportInvoiceToPdf($invoiceId)
+    public function exportInvoiceToPdf($invoiceId): bool
     {
-        $invoice = $this->getInvoice($invoiceId);
-        $data = [
-            'invoice' => $invoice,
-            'invoiceParts' => $this->getInvoiceParts($invoiceId),
-            'mechanicName' => auth()->user()->name,
-            'currency' => $this->getCurrency(),
-        ];
-        $pdf = PDF::loadView('mechanic.invoices.exportPdf', $data);
-        Storage::disk('public')->put('invoice: ' . $invoice['license_plate'] . '.pdf', $pdf->output());
+        try {
+            $invoice = $this->getInvoice($invoiceId);
+            $data = [
+                'invoice' => $invoice,
+                'invoiceParts' => $this->getInvoiceParts($invoiceId),
+                'mechanicName' => auth()->user()->name,
+                'currency' => $this->getCurrency(),
+            ];
+            $pdf = PDF::loadView('mechanic.invoices.exportPdf', $data);
+            Storage::disk('public')->put('invoice: ' . $invoice['license_plate'] . '.pdf', $pdf->output());
+            return true;
+        } catch (\Exception $e) {
+            captureException($e);
+        }
+        return false;
     }
 
     /**

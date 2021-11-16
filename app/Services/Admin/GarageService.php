@@ -39,10 +39,12 @@ class GarageService
                 }
             }
             DB::commit();
-        }catch (\Exception $e){
+            return true;
+        } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
     /**
@@ -86,7 +88,16 @@ class GarageService
      */
     public function deleteEmail($emailId)
     {
-        GarageEmail::find($emailId)->delete();
+        try {
+            DB::beginTransaction();
+            GarageEmail::find($emailId)->delete();
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
+        }
+        return false;
     }
 
     /**
@@ -94,7 +105,16 @@ class GarageService
      */
     public function restoreEmail($emailId)
     {
-        GarageEmail::onlyTrashed()->find($emailId)->restore();
+        try {
+            DB::beginTransaction();
+            GarageEmail::onlyTrashed()->find($emailId)->restore();
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            captureException($e);
+            DB::rollBack();
+        }
+        return false;
     }
 
     /**
@@ -108,10 +128,12 @@ class GarageService
                 'garage_id' => null
             ]);
             DB::commit();
-        }catch (\Exception $e){
+            return true;
+        } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
     /**
@@ -145,10 +167,12 @@ class GarageService
                 }
             }
             DB::commit();
-        }catch (\Exception $e){
+            return true;
+        } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
     /**
@@ -156,7 +180,7 @@ class GarageService
      */
     public function getAllGarages()
     {
-       return Garage::all();
+        return Garage::all();
     }
 
     /**
@@ -172,10 +196,12 @@ class GarageService
             ]);
             GarageEmail::query()->where('garage_id', $garageId)->delete();
             DB::commit();
-        }catch (\Exception $e){
+            return true;
+        } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
+        return false;
     }
 
 }

@@ -9,9 +9,9 @@ class LoginService
      */
     public function checkIfLoggedAsAdmin(): bool
     {
-        if (auth('admin')->user()){
+        if (auth('admin')->user()) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -24,8 +24,8 @@ class LoginService
     {
         if (!auth('admin')->attempt($request->except('_token'))) {
             return false;
-            }else {
-                return true;
-            }
+        } else {
+            return true;
+        }
     }
 }

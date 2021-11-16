@@ -59,13 +59,10 @@ class MechanicController extends Controller
      */
     public function editMechanicProfile(EditMechanicProfileRequest $request)
     {
-        try {
-            $this->mechanicService->editProfile($request, auth()->id());
+        if ($this->mechanicService->editProfile($request, auth()->id())) {
             return back()->with('success', 'Profile updated successfully');
-        } catch (\Exception $e){
-            captureException($e);
-            return back()->with('error', 'Something went wrong');
         }
+        return back()->with('error', 'Something went wrong');
     }
 
     /**
@@ -74,14 +71,10 @@ class MechanicController extends Controller
      */
     public function changeMechanicPassword(ChangeMechanicPasswordRequest $request)
     {
-        try {
-            if ($this->mechanicService->updatePassword($request, auth()->id()))
+        if ($this->mechanicService->updatePassword($request, auth()->id())) {
             return back()->with('success', 'You successfully update your password');
-            else return back()->with('error', 'Wrong password');
-        } catch (\Exception $e){
-            captureException($e);
-            return back()->with('error', 'Something went wrong');
         }
+        return back()->with('error', 'Something went wrong');
     }
 
     /**
@@ -115,13 +108,10 @@ class MechanicController extends Controller
      */
     public function storeInvoice(StoreInvoiceRequest $request)
     {
-        try {
-            $this->invoiceService->storeInvoice(auth()->user()->garage_id, auth()->id(), $request);
+        if ($this->invoiceService->storeInvoice(auth()->user()->garage_id, auth()->id(), $request)) {
             return redirect(route('mechanic.dashboard'))->with('success', 'You just create a new invoice');
-        } catch (\Exception $e) {
-            captureException($e);
-            return redirect(route('mechanic.dashboard'))->with('error', 'Something went wrong');
         }
+        return redirect(route('mechanic.dashboard'))->with('error', 'Something went wrong');
     }
 
     /**
@@ -131,12 +121,12 @@ class MechanicController extends Controller
     public function deleteInvoice($invoiceId)
     {
 
-        try {
-            $this->invoiceService->deleteInvoice($invoiceId, auth()->id());
+
+        if ($this->invoiceService->deleteInvoice($invoiceId, auth()->id())) {
             return redirect(route('mechanic.dashboard'))->with('success', 'Invoice Deleted');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Something went wrong');
         }
+        return back()->with('error', 'Something went wrong');
+
     }
 
     /**
@@ -145,11 +135,11 @@ class MechanicController extends Controller
      */
     public function exportPdf($invoiceId)
     {
-        try {
-            $this->invoiceService->exportInvoiceToPdf($invoiceId);
-            return redirect(route('mechanic.dashboard'))->with('success', 'You successfully exported invoice file to Pdf');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Something went wrong');
+        if ($this->invoiceService->exportInvoiceToPdf($invoiceId)) {
+            return redirect(route('mechanic.dashboard'))->with('success',
+                'You successfully exported invoice file to Pdf');
         }
+        return back()->with('error', 'Something went wrong');
+
     }
 }

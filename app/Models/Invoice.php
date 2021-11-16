@@ -38,7 +38,8 @@ class Invoice extends Model
                 $query->where('license_plate', 'like', '%' . $search . '%')
                     ->orWhere('vin', 'like', '%' . $search . '%')
                     ->orWhere('brand', 'like', '%' . $search . '%')
-                    ->orWhere('model', 'like', '%' . $search . '%');
+                    ->orWhere('model', 'like', '%' . $search . '%')
+                    ->orWhere('invoice_number', 'like', '%' . $search . '%');
             });
         });
     }

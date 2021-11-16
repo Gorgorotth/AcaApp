@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Services\Admin\GarageService;
 use App\Services\Admin\InvoiceService;
 use App\Services\Admin\MechanicService;
@@ -25,8 +26,11 @@ class AdminController extends Controller
     /**
      * @param InvoiceService $invoiceService
      */
-    public function __construct(InvoiceService $invoiceService, MechanicService $mechanicService, GarageService $garageService)
-    {
+    public function __construct(
+        InvoiceService $invoiceService,
+        MechanicService $mechanicService,
+        GarageService $garageService
+    ) {
         $this->invoiceService = $invoiceService;
         $this->mechanicService = $mechanicService;
         $this->garageService = $garageService;
@@ -53,8 +57,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard',[
-            'invoices' => $this->invoiceService->adminDashboard(request()->search),
+        return view('admin.dashboard', [
+            'invoices' => $this->mechanicService->dashboard(request()->search, Invoice::class ),
             'orderBy' => request()->sortByCreatedDate
         ]);
     }

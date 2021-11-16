@@ -2,18 +2,18 @@
 @section('content')
     <div class="container">
         <div class="list-group">
-            {{--            <div class="row justify-content-between my-4">--}}
-            {{--                <form method="get" action="{{route('admin.dashboard')}}" class="d-flex col-sm-4">--}}
-            {{--                    <input class="form-control me-2" type="text" name="search" placeholder="Search" aria-label="Search"--}}
-            {{--                           value="{{request('search')}}">--}}
-            {{--                    <button class="btn btn-outline-primary" type="submit">Search</button>--}}
-            {{--                </form>--}}
-            {{--                <form method="get" action="{{route('admin.dashboard')}}" class="col-sm-2">--}}
-            {{--                    <button class="btn btn-primary" value="{{$orderBy}}" name="sortByCreatedDate" type="submit">Sort by--}}
-            {{--                        date--}}
-            {{--                    </button>--}}
-            {{--                </form>--}}
-            {{--            </div>--}}
+            <div class="row justify-content-between my-4">
+                <form method="get" action="{{route('admin.garage-dashboard')}}" class="d-flex col-sm-4">
+                    <input class="form-control me-2" type="text" name="search" placeholder="Search" aria-label="Search"
+                           value="{{request('search')}}">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+                <form method="get" action="{{route('admin.garage-dashboard')}}" class="col-sm-2">
+                    <button class="btn btn-primary" value="{{$orderBy}}" name="sortByCreatedDate" type="submit">Sort by
+                        date
+                    </button>
+                </form>
+            </div>
             <div class="container">
                 <div class="row mt-3">
                     <table class="table table-bordered">
@@ -50,7 +50,8 @@
                                     {{$garage['address']}}
                                 </th>
                                 <th>
-                                    <a href="{{route('admin.edit-garage', ['garageId' => $garage['id']])}}" class="btn btn-outline-primary">Edit</a>
+                                    <a href="{{route('admin.edit-garage', ['garageId' => $garage['id']])}}"
+                                       class="btn btn-outline-primary">Edit</a>
                                 </th>
                                 <th>
                                     <div>

@@ -21,7 +21,22 @@ class Garage extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param $query
+     * @param array $filters
+     */
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('address', 'like', '%' . $search . '%')
+                    ->orWhere('hourly_rate', 'like', '%' . $search . '%');
+            });
+        });
+    }
+
+    /**
+     * @return HasMany
      */
     public function mechanics(): HasMany
     {
@@ -29,7 +44,7 @@ class Garage extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function emails(): HasMany
     {

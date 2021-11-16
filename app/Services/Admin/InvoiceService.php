@@ -8,29 +8,6 @@ use App\Models\InvoicePart;
 
 class InvoiceService
 {
-    /**
-     * @param $request
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function adminDashboard($request)
-    {
-        $invoices = Invoice::query();
-
-        if ($request) {
-            $invoices->filter(request(['search']));
-        }
-
-        if (request()->sortByCreatedDate == 1) {
-            $invoices = $invoices->orderByDesc('created_at');
-        } else if(request()->sortByCreatedDate == 0) {
-            $invoices = $invoices->orderBy('created_at');
-        } else {
-            $invoices = $invoices->latest();
-        }
-
-        return $invoices->paginate(6);
-    }
-
 
     /**
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|string|null
