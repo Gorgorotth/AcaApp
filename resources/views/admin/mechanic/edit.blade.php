@@ -2,7 +2,8 @@
 @section('content')
     <div class="container text-center d-flex justify-content-center w-75 my-4">
         <div class="col-md-6">
-            <form class="my-4" method="post" action="{{route('admin.update-mechanic', ['mechanicId' => $mechanic->id])}}">
+            <form class="my-4" method="post" action="{{route('admin.mechanic.update', ['mechanic' => $mechanic->id])}}">
+                @method('put')
                 @csrf
                 <div class="container border mb-4 pb-4">
                     <div class="modal-header">
@@ -25,10 +26,11 @@
                     <div class="row my-2">
                         <label for="garage" class="col-sm-2 col-form-label">Garage:</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="garage" id="garage">
-                                <option value="-1" selected>Select Garage</option>
+                            <select class="form-select" name="garageId" id="garage">
+                                <option value="-1">None</option>
+
                                 @foreach($garages as $garage)
-                                    <option value="{{$garage->id}}">{{$garage->name}}</option>
+                                    <option {{$garage == $mechanic->garage ? 'selected' : ''}} value="{{$garage->id}}">{{$garage->name}}</option>
                                 @endforeach
                             </select>
                         </div>

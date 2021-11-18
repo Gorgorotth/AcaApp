@@ -22,11 +22,12 @@
                     </ul>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-condensed nomargin">
+            <div class="table-responsive pb-2">
+                <h5>Part</h5>
+                <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Name</th>
+                        <th>Item Part</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -34,6 +35,7 @@
                     </thead>
                     <tbody>
                     @foreach($invoiceParts as $invoicePart)
+                        @if($invoicePart->job_type == $invoicePart->typePart)
                         <tr>
                             <td>
                                 <div><strong>{{$invoicePart['name']}}</strong></div>
@@ -43,11 +45,67 @@
                             <td>{{$invoicePart['price'] . $currency}}</td>
                             <td>{{$invoicePart['totalPrice'] . $currency}}</td>
                         </tr>
+                        @endif
                     @endforeach
                     </tbody>
                 </table>
             </div>
 
+            <div class="table-responsive py-2">
+                <h5>Liquid</h5>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Item Liquid</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($invoiceParts as $invoicePart)
+                        @if($invoicePart->job_type == $invoicePart->typeLiquid)
+                        <tr>
+                            <td>
+                                <div><strong>{{$invoicePart['name']}}</strong></div>
+                            </td>
+                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                            <td>{{$invoicePart['price'] . $currency}}</td>
+                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                        </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-responsive pt-2">
+                <h5>Work</h5>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Item Work</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($invoiceParts as $invoicePart)
+                        @if($invoicePart->job_type == $invoicePart->typeWork)
+                        <tr>
+                            <td>
+                                <div><strong>{{$invoicePart['name']}}</strong></div>
+                            </td>
+                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                            <td>{{$invoicePart['price'] . $currency}}</td>
+                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                        </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-sm-6 text-left">

@@ -5,14 +5,17 @@ namespace App\Services\Admin;
 use App\Models\Garage;
 use App\Models\GarageEmail;
 use App\Models\Mechanic;
+use App\Services\ResponseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class GarageService
 {
     /**
      * @param $request
+     * @return ResponseService
      */
-    public function storeGarage($request)
+    public function storeGarage($request): ResponseService
     {
         try {
             DB::beginTransaction();
@@ -21,7 +24,6 @@ class GarageService
                 'address' => $request->address,
                 'hourly_rate' => $request->hourlyPrice
             ]);
-
             if ($emails = $request->addEmailToGarage) {
                 foreach ($emails as $email) {
                     GarageEmail::query()->create([
@@ -30,7 +32,6 @@ class GarageService
                     ]);
                 }
             }
-
             if ($mechanics = $request->mechanics) {
                 foreach ($mechanics as $mechanicId) {
                     Mechanic::query()->where('id', $mechanicId)->update([
@@ -39,12 +40,21 @@ class GarageService
                 }
             }
             DB::commit();
-            return true;
+            return ResponseService::response(true, 'Garage Created');
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
+    }
+
+    /**
+     * @param $garageId
+     * @return mixed
+     */
+    public function getEmailsForGarage($garageId)
+    {
+        return $this->getGarage($garageId)->emails;
     }
 
     /**
@@ -58,20 +68,11 @@ class GarageService
 
     /**
      * @param $garageId
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function getEmailsForGarage($garageId)
-    {
-        return GarageEmail::query()->where('garage_id', $garageId)->get();
-    }
-
-    /**
-     * @param $garageId
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return mixed
      */
     public function getMechanicsForGarage($garageId)
     {
-        return Mechanic::query()->where('garage_id', $garageId)->get();
+        return $this->getGarage($garageId)->mechanics;
     }
 
     /**
@@ -85,62 +86,57 @@ class GarageService
 
     /**
      * @param $emailId
+     * @return ResponseService
      */
-    public function deleteEmail($emailId)
+    public function deleteEmail($emailId): ResponseService
     {
         try {
-            DB::beginTransaction();
             GarageEmail::find($emailId)->delete();
-            DB::commit();
-            return true;
+            return ResponseService::response(true, 'Email is deleted');
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $emailId
+     * @return ResponseService
      */
-    public function restoreEmail($emailId)
+    public function restoreEmail($emailId): ResponseService
     {
         try {
-            DB::beginTransaction();
             GarageEmail::onlyTrashed()->find($emailId)->restore();
-            DB::commit();
-            return true;
+            return ResponseService::response(true, 'Email restored');
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $mechanicId
+     * @return ResponseService
      */
-    public function removeMechanic($mechanicId)
+    public function removeMechanic($mechanicId): ResponseService
     {
         try {
-            DB::beginTransaction();
             Mechanic::query()->where('id', $mechanicId)->update([
                 'garage_id' => null
             ]);
-            DB::commit();
-            return true;
+            return ResponseService::response(true, 'Mechanic is removed');
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $request
      * @param $garageId
+     * @return ResponseService
      */
-    public function updateGarage($request, $garageId)
+    public function updateGarage($request, $garageId): ResponseService
     {
         try {
             DB::beginTransaction();
@@ -149,7 +145,6 @@ class GarageService
                 'address' => $request->address,
                 'hourly_rate' => $request->hourlyRate
             ]);
-
             if ($mechanics = $request->mechanics) {
                 foreach ($mechanics as $i => $mechanicId) {
                     Mechanic::query()->where('id', $mechanicId)->update([
@@ -157,7 +152,6 @@ class GarageService
                     ]);
                 }
             }
-
             if ($emails = $request->addEmailToGarage) {
                 foreach ($emails as $i => $email) {
                     GarageEmail::query()->create([
@@ -167,12 +161,12 @@ class GarageService
                 }
             }
             DB::commit();
-            return true;
+            return ResponseService::response(true, 'Update Successful');
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
@@ -184,24 +178,46 @@ class GarageService
     }
 
     /**
-     * @param $garageId
+     * @param $request
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function deleteGarage($garageId)
+    public function garageDashboard($request): LengthAwarePaginator
+    {
+        if ($request->search) {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Garage::query()->filter(['search' => $request->search])->orderByDesc('created_at');
+            } else {
+                $invoices = Garage::query()->filter(['search' => $request->search])->orderBy('created_at');
+            }
+        } else {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Garage::query()->orderByDesc('created_at');
+            } else {
+                $invoices = Garage::query()->orderBy('created_at');
+            }
+        }
+        return $invoices->paginate(6);
+    }
+
+    /**
+     * @param $garageId
+     * @return ResponseService
+     */
+    public function deleteGarage($garageId): ResponseService
     {
         try {
             DB::beginTransaction();
-            Garage::query()->firstWhere('id', $garageId)->delete();
+            $this->getGarage($garageId)->delete();
             Mechanic::query()->where('garage_id', $garageId)->update([
                 'garage_id' => null
             ]);
             GarageEmail::query()->where('garage_id', $garageId)->delete();
             DB::commit();
-            return true;
+            return ResponseService::response(true, 'Garage deleted successfully');
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
-
 }

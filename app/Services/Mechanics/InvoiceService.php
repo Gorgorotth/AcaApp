@@ -6,70 +6,73 @@ use App\Models\Client;
 use App\Models\Garage;
 use App\Models\Invoice;
 use App\Models\InvoicePart;
+use App\Services\ResponseService;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
 
 class InvoiceService
 {
     /**
-     * @param $request
+     * @param Request $request
      * @param $garageId
      * @param $orderBy
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function dashboard($request, $garageId)
+    public function dashboard(Request $request, $garageId)
     {
-        if (!request()->sortByCreatedDate) {
-            request()->sortByCreatedDate = 1;
+        if ($request->search) {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Invoice::query()->where('garage_id',
+                    $garageId)->filter(['search' => $request->search])->orderByDesc('created_at');
+            } else {
+                $invoices = Invoice::query()->where('garage_id',
+                    $garageId)->filter(['search' => $request->search])->orderBy('created_at');
+            }
         } else {
-            request()->sortByCreatedDate = 0;
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Invoice::query()->where('garage_id',
+                    $garageId)->orderByDesc('created_at');
+            } else {
+                $invoices = Invoice::query()->where('garage_id',
+                    $garageId)->orderBy('created_at');
+            }
         }
-
-        if ($request) {
-            $invoices = Invoice::query()->where('garage_id',
-                $garageId)->latest()->filter(request(['search']))->paginate(6)->withQueryString();
-        } elseif (request()->sortByCreatedDate == 1) {
-            $invoices = Invoice::query()->where('garage_id', $garageId)->orderByDesc('created_at')->get();
-        } else {
-            $invoices = Invoice::query()->where('garage_id', $garageId)->orderBy('created_at')->get();
-        }
-        return $invoices;
+        return $invoices->paginate(6);
     }
 
     /**
      * @param $invoiceId
      * @param $authorId
-     * @return bool
+     * @return ResponseService
      */
-    public function deleteInvoice($invoiceId, $authorId): bool
+    public function deleteInvoice($invoiceId, $authorId): ResponseService
     {
         try {
             DB::beginTransaction();
             $invoice = $this->getInvoice($invoiceId);
             if ($this->checkAuthor($invoice, $authorId)) {
                 $invoice->delete();
-                $invoiceParts = $this->getInvoiceParts($invoiceId);
+                $invoiceParts = $invoice->parts;
                 foreach ($invoiceParts as $part) {
                     $part->delete();
                 }
                 DB::commit();
-                return true;
+                return ResponseService::response(true, 'Invoice Deleted');
             }
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $invoiceId
-     * @return Invoice
+     * @return mixed
      */
-    public function getInvoice($invoiceId): Invoice
+    public function getInvoice($invoiceId)
     {
         return Invoice::find($invoiceId);
     }
@@ -89,19 +92,11 @@ class InvoiceService
     }
 
     /**
-     * @param $invoiceId
-     * @return Collection
-     */
-    public function getInvoiceParts($invoiceId): Collection
-    {
-        return InvoicePart::query()->where('invoice_id', $invoiceId)->get();
-    }
-
-    /**
      * @param $garageId
      * @param $mechanicId
+     * @return ResponseService
      */
-    public function storeInvoice($garageId, $mechanicId, $request): bool
+    public function storeInvoice($garageId, $mechanicId, $request): ResponseService
     {
         try {
             DB::beginTransaction();
@@ -121,10 +116,8 @@ class InvoiceService
                 'license_plate' => $request->inputPlate,
                 'brand' => $request->inputBrand,
                 'model' => $request->inputModel,
-                'total_price' => 123,
                 'hourly_price' => $garage->hourly_rate,
             ]);
-
             foreach ($request->addPartName as $i => $part) {
                 $quantity = $request->addPartQuantity[$i];
 
@@ -144,37 +137,38 @@ class InvoiceService
                 $totalPrice += $addPrice * $quantity;
             }
             $invoice->total_price = $totalPrice;
-            $invoice->invoice_number = 'INV---' . $invoice->id;
+            $invoice->invoice_number = 'INV' . $invoice->id;
             $invoice->save();
             DB::commit();
-            return true;
+            return ResponseService::response(true, 'You just create a new invoice');
         } catch (\Exception $e) {
             captureException($e);
             DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $invoiceId
+     * @return ResponseService
      */
-    public function exportInvoiceToPdf($invoiceId): bool
+    public function exportInvoiceToPdf($invoiceId): ResponseService
     {
         try {
             $invoice = $this->getInvoice($invoiceId);
             $data = [
                 'invoice' => $invoice,
-                'invoiceParts' => $this->getInvoiceParts($invoiceId),
+                'invoiceParts' => $invoice->parts,
                 'mechanicName' => auth()->user()->name,
                 'currency' => $this->getCurrency(),
             ];
             $pdf = PDF::loadView('mechanic.invoices.exportPdf', $data);
             Storage::disk('public')->put('invoice: ' . $invoice['license_plate'] . '.pdf', $pdf->output());
-            return true;
+            return ResponseService::response(true, 'You successfully exported invoice file to Pdf');
         } catch (\Exception $e) {
             captureException($e);
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
@@ -183,14 +177,5 @@ class InvoiceService
     public function getCurrency()
     {
         return trans('garage.currency');
-    }
-
-    /**
-     * @param $clientId
-     * @return mixed
-     */
-    public function getClient($clientId)
-    {
-        return Client::find($clientId);
     }
 }

@@ -2,18 +2,32 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\Mechanic;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateMechanicRequest extends FormRequest
 {
+    /**
+     *
+     */
     public function prepareForValidation()
     {
         $this->merge([
-            'garage' => $this->prepareGarage(),
-            'email' => $this->prepareEmail(),
+            'garageId' => $this->prepareGarage(),
         ]);
+    }
+
+    /**
+     * @return bool|float|int|string|\Symfony\Component\HttpFoundation\InputBag|null
+     */
+    public function prepareGarage()
+    {
+        $garageId = $this->request->get('garageId');
+        if ($garageId != -1) {
+            return $garageId;
+        }
+        return null;
+
     }
 
     /**
@@ -33,33 +47,11 @@ class UpdateMechanicRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => ['required', 'min:3', 'max:20'],
-            'email' => ['nullable', 'email', Rule::unique('mechanics', 'email')],
-            'garage' => ['nullable', Rule::exists('garages', 'id')]
-        ];
-    }
-
-    public function prepareGarage()
-    {
-        $mechanicId = request()->mechanicId;
-        $garageId = $this->request->get('garage');
-        if ($garageId && $garageId != -1){
-            if (Mechanic::query()->where('id', $mechanicId)->where('garage_id', $garageId)->exists()){
-                unset($garageId);
-                return null;
-            }else return $garageId;
-        }else return null;
-    }
-
-    public function prepareEmail()
-    {
-        $mechanicId = request()->mechanicId;
-        if ($email = $this->request->get('email')){
-            if (Mechanic::query()->where('id', $mechanicId)->where('email', $email)->exists()){
-                unset($email);
-                return null;
-            }else return $email;
-        }else return null;
+        return array_merge([
+                'name' => ['required', 'min:3', 'max:20'],
+                'email' => ['required', 'email', Rule::unique('mechanics', 'email')->ignore(request()->mechanic)],
+                'garageId' => ['nullable', Rule::exists('garages', 'id')]
+            ]
+        );
     }
 }

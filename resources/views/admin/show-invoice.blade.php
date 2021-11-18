@@ -22,11 +22,12 @@
                     </ul>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-condensed nomargin">
+            <div class="table-responsive pb-2">
+                <h5>Part</h5>
+                <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Name</th>
+                        <th>Item Part</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -34,20 +35,77 @@
                     </thead>
                     <tbody>
                     @foreach($invoiceParts as $invoicePart)
-                        <tr>
-                            <td>
-                                <div><strong>{{$invoicePart['name']}}</strong></div>
-                                <small>Stock No: {{$invoicePart['stock_no']}}</small>
-                            </td>
-                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
-                            <td>{{$invoicePart['price'] . $currency}}</td>
-                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
-                        </tr>
+                        @if($invoicePart->job_type == $invoicePart->typePart)
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                    <small>Stock No: {{$invoicePart['stock_no']}}</small>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
+                        @endif
                     @endforeach
                     </tbody>
                 </table>
             </div>
 
+            <div class="table-responsive py-2">
+                <h5>Liquid</h5>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Item Liquid</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($invoiceParts as $invoicePart)
+                        @if($invoicePart->job_type == $invoicePart->typeLiquid)
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-responsive pt-2">
+                <h5>Work</h5>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Item Work</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($invoiceParts as $invoicePart)
+                        @if($invoicePart->job_type == $invoicePart->typeWork)
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-sm-6 text-left">
@@ -66,39 +124,6 @@
                     <ul class="list-unstyled">
                         <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>
                     </ul>
-{{--                    <div>--}}
-{{--                        <a class="btn btn-outline-info" href="{{route('mechanic.exportInvoiceToPdf', ['invoiceId' => $invoice['id']])}}">EXPORT TO PDF</a>--}}
-{{--                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"--}}
-{{--                                data-bs-target="#deleteModal">--}}
-{{--                            DELETE INVOICE--}}
-{{--                        </button>--}}
-{{--                        <form method="post" action="{{route('mechanic.deleteInvoice', ['invoiceId' => $invoice['id']])}}">--}}
-{{--                            @csrf--}}
-{{--                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal"--}}
-{{--                                 aria-hidden="true">--}}
-{{--                                <div class="modal-dialog">--}}
-{{--                                    <div class="modal-content">--}}
-{{--                                        <div class="modal-header">--}}
-{{--                                            <h5 class="modal-title" id="exampleModalLabel">Delete Invoice</h5>--}}
-{{--                                            <button type="button" class="btn-close" data-bs-dismiss="modal"--}}
-{{--                                                    aria-label="Close"></button>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="modal-body">--}}
-{{--                                            <div class="alert alert-danger text-center">--}}
-{{--                                                DELETE INVOICE???--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="modal-footer">--}}
-{{--                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">--}}
-{{--                                                CANCEL--}}
-{{--                                            </button>--}}
-{{--                                            <button type="submit" class="btn btn-primary">DELETE</button>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </form>--}}
-{{--                    </div>--}}
                 </div>
             </div>
         </div>

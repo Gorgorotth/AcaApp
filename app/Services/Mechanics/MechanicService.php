@@ -3,7 +3,7 @@
 namespace App\Services\Mechanics;
 
 use App\Models\Mechanic;
-use Illuminate\Support\Facades\DB;
+use App\Services\ResponseService;
 use Illuminate\Support\Facades\Hash;
 
 class MechanicService
@@ -11,32 +11,28 @@ class MechanicService
     /**
      * @param $request
      * @param $mechanicId
-     * @return bool
+     * @return ResponseService
      */
-    public function editProfile($request, $mechanicId): bool
+    public function editProfile($request, $mechanicId): ResponseService
     {
-
         try {
-            DB::beginTransaction();
             $mechanic = $this->getMechanic($mechanicId);
-            if (Hash::check($request->password, $mechanic->password)) {
-                if (!$request->email) {
-                    $mechanic->name = $request->name;
-                    $mechanic->save();
 
-                } else {
-                    $mechanic->name = $request->name;
-                    $mechanic->email = $request->email;
-                    $mechanic->save();
-                }
+            if (!Hash::check($request->password, $mechanic->password)) {
+                return ResponseService::response(false, 'Wrong password');
             }
-            DB::commit();
-            return true;
+            $mechanic->name = $request->name;
+            $mechanic->email = $request->email;
+            $mechanic->save();
+
+            return ResponseService::response(true, 'Profile successfully updated');
+
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
+
+            return ResponseService::response(false, 'Something went wrong');
         }
-        return false;
+
     }
 
     /**
@@ -51,23 +47,22 @@ class MechanicService
     /**
      * @param $request
      * @param $mechanicId
-     * @return bool
+     * @return ResponseService
      */
-    public function updatePassword($request, $mechanicId): bool
+    public function updatePassword($request, $mechanicId): ResponseService
     {
         try {
-            DB::beginTransaction();
             $mechanic = $this->getMechanic($mechanicId);
-            if (Hash::check($request->currentPassword, $mechanic->password)) {
-                $mechanic->password = $request->newPassword;
-                $mechanic->save();
+            if (!Hash::check($request->currentPassword, $mechanic->password)) {
+                return ResponseService::response(false, 'Wrong password');
             }
-            DB::commit();
-            return true;
+            $mechanic->password = $request->password;
+            $mechanic->save();
+            return ResponseService::response(true, 'You successfully update your password');
+
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
+            return ResponseService::response(false, 'Something went wrong');
         }
-        return false;
     }
 }

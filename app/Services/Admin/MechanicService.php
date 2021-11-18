@@ -3,125 +3,110 @@
 namespace App\Services\Admin;
 
 use App\Models\Mechanic;
-use Illuminate\Support\Facades\DB;
+use App\Services\ResponseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class MechanicService
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function getUnemployedMechanics()
+    public function getUnemployedMechanics(): Collection
     {
         return Mechanic::query()->whereNull('garage_id')->get();
     }
 
     /**
-     * @return Mechanic[]|\Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function getAllMechanics()
+    public function getAllMechanics(): Collection
     {
         return Mechanic::all();
     }
 
     /**
      * @param $mechanicId
-     * @return mixed
+     * @return ?Mechanic
      */
-    public function getMechanic($mechanicId)
+    public function getMechanic($mechanicId): ?Mechanic
     {
         return Mechanic::find($mechanicId);
     }
 
     /**
      * @param $request
-     * @param $model
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function dashboard($request, $model)
+    public function mechanicDashboard($request): LengthAwarePaginator
     {
-        $data = $model::query();
-        if (!request()->sortByCreatedDate) {
-            request()->sortByCreatedDate = 1;
-        } else {
-            request()->sortByCreatedDate = 0;
-        }
-
-        if ($request) {
-            $data->filter(request(['search']));
-        }
-
-        if (request()->sortByCreatedDate == 1) {
-            $data = $data->orderByDesc('created_at');
-        } else {
-            if (request()->sortByCreatedDate == 0) {
-                $data = $data->orderBy('created_at');
+        if ($request->search) {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Mechanic::query()->filter(['search' => $request->search])->orderByDesc('created_at');
             } else {
-                $data = $data->latest();
+                $invoices = Mechanic::query()->filter(['search' => $request->search])->orderBy('created_at');
+            }
+        } else {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Mechanic::query()->orderByDesc('created_at');
+            } else {
+                $invoices = Mechanic::query()->orderBy('created_at');
             }
         }
-        return $data->paginate(6);
+        return $invoices->paginate(6);
     }
 
     /**
      * @param $request
+     * @return ResponseService
      */
-    public function storeMechanic($request)
+    public function storeMechanic($request): ResponseService
     {
         try {
-            DB::beginTransaction();
             Mechanic::query()->create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => $request->password
             ]);
-            DB::commit();
-            return true;
+            return ResponseService::response(true, 'You created a mechanic');
         } catch (\Exception $e) {
-            DB::rollBack();
             captureException($e);
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $request
      * @param $mechanicId
+     * @return ResponseService
      */
-    public function updateMechanic($request, $mechanicId)
+    public function updateMechanic($request, $mechanicId): ResponseService
     {
         try {
-            DB::beginTransaction();
-            if ($request->email) {
-                Mechanic::query()->where('id', $mechanicId)->update([
-                    'name' => $request->name,
-                    'email' => $request->email
-                ]);
-            } else {
-                Mechanic::query()->where('id', $mechanicId)->update(['name' => $request->name]);
-            }
-
-            if ($request->garage) {
-                Mechanic::query()->where('id', $mechanicId)->update(['garage_id' => $request->garage]);
-            }
-            DB::commit();
-            return true;
+            Mechanic::query()->where('id', $mechanicId)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'garage_id' => $request->garageId
+            ]);
+            return ResponseService::response(true, 'Mechanic is deleted');
         } catch (\Exception $e) {
             captureException($e);
-            DB::rollBack();
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 
     /**
      * @param $mechanicId
+     * @return ResponseService
      */
-    public function deleteMechanic($mechanicId)
+    public function deleteMechanic($mechanicId): ResponseService
     {
         try {
-            return Mechanic::query()->find($mechanicId)->delete();
+            Mechanic::query()->find($mechanicId)->delete();
+            return ResponseService::response(true, 'Mechanic is deleted');
         } catch (\Exception $e) {
             captureException($e);
         }
-        return false;
+        return ResponseService::response(false, 'Something went wrong');
     }
 }

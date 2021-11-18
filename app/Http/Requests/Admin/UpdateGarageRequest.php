@@ -21,6 +21,30 @@ class UpdateGarageRequest extends FormRequest
     }
 
     /**
+     * @return array|bool|float|int|string|\Symfony\Component\HttpFoundation\InputBag
+     */
+    public function prepareMechanics()
+    {
+        $mechanics = $this->request->get('addMechanicToGarage');
+
+        if (!$mechanics) {
+            return [];
+        }
+
+        foreach ($mechanics as $i => $mechanicId) {
+            $allow = Mechanic::query()
+                ->whereNull('garage_id')
+                ->where('id', $mechanicId)
+                ->first();
+
+            if (!$allow) {
+                unset($mechanics[$i]);
+            }
+        }
+        return $mechanics;
+    }
+
+    /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -45,13 +69,6 @@ class UpdateGarageRequest extends FormRequest
             $this->checkEmails(),
             $this->checkMechanics(),
         );
-    }
-
-    public function messages()
-    {
-        return [
-            'addEmailToGarage.*.unique' => 'One of emails already exist! Check your emails'
-        ];
     }
 
     /**
@@ -84,31 +101,18 @@ class UpdateGarageRequest extends FormRequest
                     ]
                 ];
             }
-        }else
+        } else {
             return [];
+        }
     }
 
     /**
-     * @return array|bool|float|int|string|\Symfony\Component\HttpFoundation\InputBag
+     * @return string[]
      */
-    public function prepareMechanics()
+    public function messages()
     {
-        $mechanics = $this->request->get('addMechanicToGarage');
-
-        if (!$mechanics) {
-            return [];
-        }
-
-        foreach ($mechanics as $i => $mechanicId) {
-            $allow = Mechanic::query()
-                ->whereNull('garage_id')
-                ->where('id', $mechanicId)
-                ->first();
-
-            if (!$allow) {
-                unset($mechanics[$i]);
-            }
-        }
-        return $mechanics;
+        return [
+            'addEmailToGarage.*.unique' => 'One of emails already exist! Check your emails'
+        ];
     }
 }

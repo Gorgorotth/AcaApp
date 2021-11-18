@@ -9,6 +9,17 @@ use Illuminate\Validation\Rule;
 class StoreGarageRequest extends FormRequest
 {
     /**
+     *
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'addEmailToGarage' => $this->addEmailToGarage ?? [],
+            'mechanics' => $this->prepareMechanics(),
+        ]);
+    }
+
+    /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -35,6 +46,9 @@ class StoreGarageRequest extends FormRequest
         );
     }
 
+    /**
+     * @return array|array[]
+     */
     public function checkEmails()
     {
         foreach ($this->request->get('addEmailToGarage') as $i => $email) {
@@ -49,6 +63,9 @@ class StoreGarageRequest extends FormRequest
         return [];
     }
 
+    /**
+     * @return array|\string[][]|void
+     */
     public function checkMechanics()
     {
         if ($mechanics = $this->request->get('mechanics')) {
@@ -59,10 +76,14 @@ class StoreGarageRequest extends FormRequest
                     ]
                 ];
             }
-        }else
-        return [];
+        } else {
+            return [];
+        }
     }
 
+    /**
+     * @return string[]
+     */
     public function messages()
     {
         return [
@@ -73,14 +94,9 @@ class StoreGarageRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'addEmailToGarage' => $this->addEmailToGarage ?? [],
-            'mechanics' => $this->prepareMechanics(),
-        ]);
-    }
-
+    /**
+     * @return array|bool|float|int|string|\Symfony\Component\HttpFoundation\InputBag
+     */
     public function prepareMechanics()
     {
         $mechanics = $this->request->get('addMechanicToGarage');

@@ -2,16 +2,25 @@
 @section('content')
     <div class="container">
         <div class="list-group">
-            <div class="row justify-content-between my-4">
-                <form method="get" action="{{route('admin.dashboard')}}" class="d-flex col-sm-4">
-                    <input class="form-control me-2" type="text" name="search" placeholder="Search" aria-label="Search"
-                           value="{{request('search')}}">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
+            <div class="d-flex justify-content-between my-4">
+                <form method="get" action="{{route('admin.dashboard')}}"
+                      class="d-flex justify-content-between align-content-center col-sm-11">
+                    <div>
+                        <input class="form-control me-2" type="text" name="search" placeholder="Search"
+                               aria-label="Search"
+                               value="{{request('search')}}">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </div>
                 </form>
                 <form method="get" action="{{route('admin.dashboard')}}" class="col-sm-2">
-                    <button class="btn btn-primary" value="{{$orderBy}}" name="sortByCreatedDate" type="submit">Sort by
-                        date
-                    </button>
+                    <div class="end-50">
+                        <input type="hidden" name="sortByCreatedDate" value="{{$orderBy}}">
+
+                        <input hidden name="search" placeholder="Search" aria-label="Search"
+                               value="{{request('search')}}">
+                        <button class="text-start btn btn-primary" type="submit">Sort by date</button>
+                    </div>
+
                 </form>
             </div>
             <div class="container">
@@ -55,7 +64,8 @@
                                     {{$invoice['total_price']}}
                                 </th>
                                 <th>
-                                    <a href="{{route('admin.show-invoice', ['invoiceId' => $invoice->id])}}" class="page-link">Show invoice</a>
+                                    <a href="{{route('admin.show-invoice', ['invoiceId' => $invoice->id])}}"
+                                       class="page-link">Show invoice</a>
                                 </th>
                             </tr>
                         @endforeach

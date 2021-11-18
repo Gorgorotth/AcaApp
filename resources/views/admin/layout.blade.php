@@ -15,7 +15,6 @@
         <div class="container">
             <ul class="nav nav-pills justify-content-between  py-2">
                 <li class="nav-item"><a href="{{route('admin.dashboard')}}" class="nav-link">Dashboard</a></li>
-                {{--                <li class="nav-item"><a href="{{route('admin.create-garage')}}" class="nav-link">Create Garage</a></li>--}}
                 <li>
                     <div class="btn-group dropend">
                         <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
@@ -23,8 +22,8 @@
                             Garage
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="{{route('admin.create-garage')}}" class="dropdown-item">Create</a></li>
-                            <li><a href="{{route('admin.garage-dashboard')}}" class="dropdown-item">Dashboard</a></li>
+                            <li><a href="{{route('admin.garage.create')}}" class="dropdown-item">Create</a></li>
+                            <li><a href="{{route('admin.garage.index')}}" class="dropdown-item">Dashboard</a></li>
                         </ul>
                     </div>
                 </li>
@@ -35,8 +34,8 @@
                             Mechanic
                         </button>
                         <ul class="dropdown-menu text-end">
-                            <li><a href="{{route('admin.create-mechanic')}}" class="dropdown-item">Create</a></li>
-                            <li><a href="{{route('admin.mechanic-dashboard')}}" class="dropdown-item">Dashboard</a>
+                            <li><a href="{{route('admin.mechanic.create')}}" class="dropdown-item">Create</a></li>
+                            <li><a href="{{route('admin.mechanic.index')}}" class="dropdown-item">Dashboard</a>
                             </li>
                         </ul>
                     </div>
@@ -45,8 +44,6 @@
             </ul>
         </div>
     </header>
-
-
 @endauth
 @yield('content')
 <x-session/>

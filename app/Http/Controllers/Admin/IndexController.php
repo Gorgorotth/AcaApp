@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Invoice;
 use App\Services\Admin\GarageService;
 use App\Services\Admin\InvoiceService;
 use App\Services\Admin\MechanicService;
 
-class AdminController extends Controller
+class IndexController extends Controller
 {
     /**
      * @var InvoiceService
@@ -45,9 +44,9 @@ class AdminController extends Controller
         $invoice = $this->invoiceService->getInvoice($invoiceId);
         return view('admin.show-invoice', [
             'invoice' => $invoice,
-            'invoiceParts' => $this->invoiceService->getInvoiceParts($invoiceId),
-            'client' => $this->invoiceService->getClient($invoice['client_id']),
-            'mechanicName' => auth()->user()->name,
+            'invoiceParts' => $invoice->parts,
+            'client' => $invoice->client,
+            'mechanicName' => $invoice->author->name,
             'currency' => $this->invoiceService->getCurrency(),
         ]);
     }
@@ -57,9 +56,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard', [
-            'invoices' => $this->mechanicService->dashboard(request()->search, Invoice::class ),
-            'orderBy' => request()->sortByCreatedDate
+        return view('admin.index', [
+            'invoices' => $this->invoiceService->invoiceDashboard(request()),
+            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
         ]);
     }
 }

@@ -37,13 +37,13 @@ class LoginController extends Controller
      * @param LoginStoreRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(
-        LoginStoreRequest $request
-    ) {
-        if ($this->loginService->loginAdmin($request) == false) {
-            return back()->with('error', 'Wrong email or password');
+    public function store(LoginStoreRequest $request)
+    {
+        $admin = $this->loginService->loginAdmin($request);
+        if ($admin->getSuccess()) {
+            return back()->with('error', $admin->getMessage());
         } else {
-            return redirect(route('admin.dashboard'))->with('success', 'Logged in as Admin');
+            return redirect(route('admin.dashboard'))->with('success', $admin->getMessage());
         }
     }
 
@@ -54,6 +54,6 @@ class LoginController extends Controller
     function destroy()
     {
         auth('admin')->logout();
-        return redirect(route('home'))->with('success', 'Logged out successfully');
+        return redirect(route('admin.home'))->with('success', 'Logged out successfully');
     }
 }

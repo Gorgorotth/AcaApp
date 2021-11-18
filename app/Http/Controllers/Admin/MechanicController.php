@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateMechanicRequest;
 use App\Models\Mechanic;
 use App\Services\Admin\GarageService;
 use App\Services\Admin\MechanicService;
+use Illuminate\Http\Request;
 
 class MechanicController extends Controller
 {
@@ -31,75 +32,51 @@ class MechanicController extends Controller
         $this->garageService = $garageService;
     }
 
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function createMechanic()
+    public function index()
+    {
+        return view('admin.mechanic.index', [
+            'mechanics' => $this->mechanicService->mechanicDashboard(request()),
+            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
+        ]);
+    }
+
+    public function create()
     {
         return view('admin.mechanic.create');
     }
 
-    /**
-     * @param StoreMechanicRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function storeMechanic(StoreMechanicRequest $request)
+    public function store(StoreMechanicRequest $request)
     {
-        if ($this->mechanicService->storeMechanic($request)) {
-            return redirect(route('admin.mechanic-dashboard'))->with('success', 'You created a mechanic');
+        $mechanic = $this->mechanicService->storeMechanic($request);
+        if ($mechanic->getSuccess()) {
+            return redirect(route('admin.mechanic.index'))->with('success', $mechanic->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $mechanic->getMessage());
     }
 
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function mechanicDashboard()
-    {
-        return view('admin.mechanic.dashboard', [
-            'mechanics' => $this->mechanicService->dashboard(request()->search, Mechanic::class),
-            'orderBy' => request()->sortByCreatedDate
-        ]);
-    }
-
-    /**
-     * @param $mechanicId
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function edit($mechanicId)
+    public function edit($id)
     {
         return view('admin.mechanic.edit', [
-            'mechanic' => $this->mechanicService->getMechanic($mechanicId),
+            'mechanic' => $this->mechanicService->getMechanic($id),
             'garages' => $this->garageService->getAllGarages()
         ]);
     }
 
-    /**
-     * @param UpdateMechanicRequest $request
-     * @param $mechanicId
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(UpdateMechanicRequest $request, $mechanicId)
+    public function update(UpdateMechanicRequest $request, $id)
     {
-
-        if ($this->mechanicService->updateMechanic($request, $mechanicId)) {
-            return back()->with('success', 'Mechanic data updated');
+        $mechanic = $this->mechanicService->updateMechanic($request, $id);
+        if ($mechanic->getSuccess()) {
+            return back()->with('success', $mechanic->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
-
+        return back()->with('error', $mechanic->getMessage());
     }
 
-    /**
-     * @param $mechanicId
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function deleteMechanic($mechanicId)
+    public function destroy($id)
     {
-
-        if ($this->mechanicService->deleteMechanic($mechanicId)) {
-            return back()->with('success', 'Mechanic is deleted');
+        $mechanic = $this->mechanicService->deleteMechanic($id);
+        if ($mechanic->getSuccess()) {
+            return back()->with('success', $mechanic->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
-
+        return back()->with('error', $mechanic->getMessage());
     }
 }

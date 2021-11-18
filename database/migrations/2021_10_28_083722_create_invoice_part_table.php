@@ -21,8 +21,8 @@ class CreateInvoicePartTable extends Migration
             $table->float('quantity');
             $table->float('price');
             $table->integer('job_type');
-            $table->dateTime('deleted_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

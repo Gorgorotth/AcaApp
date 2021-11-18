@@ -1,5 +1,6 @@
 <form method="post"
-      action="{{route('admin.mechanic-delete', ['mechanicId' => $mechanic->id])}}">
+      action="{{route('admin.mechanic.destroy', ['mechanic' => $mechanic->id])}}">
+    @method('delete')
     @csrf
     <div class="modal fade" id="deleteModal{{$key}}" tabindex="-1"
          aria-labelledby="deleteModal{{$key}}"

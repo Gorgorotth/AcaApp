@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreInvoiceRequest extends FormRequest
 {
+
     /**
      * Prepare the data for validation.
      *
@@ -44,9 +45,31 @@ class StoreInvoiceRequest extends FormRequest
             'inputClientName' => ['required'],
             'inputClientLastName' => ['required'],
         ],
+            $this->checkClientInputs(),
             $this->checkInvoicePartsInputs()
-            ,$this->checkClientInputs()
         );
+
+    }
+
+    /**
+     * @return \string[][]
+     */
+    public function checkClientInputs()
+    {
+        if ($this->request->get('inputClientPhone')) {
+            return [
+                'inputClientPhone' => ['required', 'digits_between:5,15'],
+            ];
+        } elseif ($this->request->get('inputClientEmail')) {
+            return [
+                'inputClientEmail' => ['required', 'email'],
+            ];
+        } else {
+            return [
+                'inputClientPhone' => ['required', 'digits_between:5,15'],
+                'inputClientEmail' => ['required', 'email'],
+            ];
+        }
 
     }
 
@@ -56,19 +79,19 @@ class StoreInvoiceRequest extends FormRequest
     public function checkInvoicePartsInputs()
     {
         foreach ($this->request->get('addPartName') as $i => $part) {
-            if ($this->request->get('addPartType')[$i] == InvoicePart::JOB_TYPE_PART){
+            if ($this->request->get('addPartType')[$i] == InvoicePart::JOB_TYPE_PART) {
                 $addPartStockNo = ['addPartStockNo.' . $i => ['required']];
-                $addPartPrice = ['addPartPrice.' . $i => ['required']];
-            } elseif ($this->request->get('addPartType')[$i] == InvoicePart::JOB_TYPE_LIQUID){
+                $addPartPrice = ['addPartPrice.' . $i => ['required', 'numeric']];
+            } elseif ($this->request->get('addPartType')[$i] == InvoicePart::JOB_TYPE_LIQUID) {
                 $addPartStockNo = [];
-                $addPartPrice = ['addPartPrice.' . $i => ['required']];
+                $addPartPrice = ['addPartPrice.' . $i => ['required', 'numeric']];
             } else {
                 $addPartStockNo = [];
                 $addPartPrice = [];
             }
             return array_merge([
                 'addPartName.' . $i => ['required'],
-                'addPartQuantity.' . $i => ['required'],
+                'addPartQuantity.' . $i => ['required', 'numeric'],
                 'addPartType.' . $i => ['required'],
             ],
                 $addPartStockNo,
@@ -80,30 +103,14 @@ class StoreInvoiceRequest extends FormRequest
         ];
     }
 
-//    protected function formatErrors(Validator $validator)
-//    {
-//        $messages = $validator->messages();
-//        foreach ($messages->all() as $message){
-//            Toastr::error($message, 'Failed', ['timeOut' => 10000]);
-//        }
-//    }
-
-    public function checkClientInputs()
+    /**
+     * @return string[]
+     */
+    public function messages()
     {
-        if ($this->request->get('inputClientPhone')){
-            return [
-                'inputClientPhone' => ['required'],
-            ];
-        } elseif ($this->request->get('inputClientEmail')){
-            return [
-                'inputClientEmail' => ['required', 'email'],
-            ];
-        } else {
-            return [
-                'inputClientPhone' => ['required'],
-                'inputClientEmail' => ['required', 'email'],
-            ];
-        }
-
+        return [
+            'addPartQuantity.*.numeric' => 'Quantity must be a number',
+            'addPartPrice.*.numeric' => 'Price must be a number'
+        ];
     }
 }

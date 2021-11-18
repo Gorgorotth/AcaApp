@@ -10,9 +10,9 @@ class InvoicePart extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const JOB_TYPE_PART = 1;
-    const JOB_TYPE_LIQUID = 2;
-    const JOB_TYPE_WORK = 3;
+    public const JOB_TYPE_PART = 1;
+    public const JOB_TYPE_LIQUID = 2;
+    public const JOB_TYPE_WORK = 3;
 
     protected $fillable = [
         'invoice_id',
@@ -22,6 +22,22 @@ class InvoicePart extends Model
         'price',
         'job_type',
     ];
+
+    public function getTypePartAttribute()
+    {
+        return self::JOB_TYPE_PART;
+    }
+
+    public function getTypeLiquidAttribute()
+    {
+        return self::JOB_TYPE_LIQUID;
+    }
+
+    public function getTypeWorkAttribute()
+    {
+        return self::JOB_TYPE_WORK;
+    }
+
     public function  getConvertedQuantityAttribute()
     {
         if ($this->job_type == self::JOB_TYPE_LIQUID) {

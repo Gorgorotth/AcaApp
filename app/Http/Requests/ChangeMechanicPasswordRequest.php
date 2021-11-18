@@ -25,7 +25,8 @@ class ChangeMechanicPasswordRequest extends FormRequest
     {
         return [
             'currentPassword' => ['required'],
-            'newPassword' => ['required'],
+            'password' => ['required', 'min:7', 'confirmed'],
+            'password_confirmation' => ['required', 'min:7', 'same:password']
         ];
     }
 }

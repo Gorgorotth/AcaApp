@@ -14,14 +14,14 @@
                             <label for="name" class="col-sm-2 col-form-label">Name:</label>
                             <div class="col-sm-9">
                                 <input type="text" name="name" class="form-control" id="name"
-                                       placeholder="{{$name}}" required>
+                                       value="{{$name}}" required>
                             </div>
                         </div>
                         <div class="row my-2">
                             <label for="email" class="col-sm-2 col-form-label">Email:</label>
                             <div class="col-sm-9">
                                 <input type="email" class="form-control" name="email" id="email"
-                                       placeholder="{{$email}}" required>
+                                       value="{{$email}}" required>
                             </div>
                         </div>
                         <div class="row my-2">
@@ -55,14 +55,14 @@
                         <div class="row my-2">
                             <label for="new-password" class="col-sm-5 col-form-label">New Password:</label>
                             <div class="col-sm-7">
-                                <input type="password" class="form-control" name="newPassword" id="new-password"
+                                <input type="password" class="form-control" name="password" id="new-password"
                                        placeholder="New Password" required>
                             </div>
                         </div>
                         <div class="row my-2">
                             <label for="confirm-password" class="col-sm-5 col-form-label">Confirm Password:</label>
                             <div class="col-sm-7">
-                                <input type="password" class="form-control" name="confirmPassword" id="confirm-password"
+                                <input type="password" class="form-control" name="password_confirmation" id="confirm-password"
                                        placeholder="Confirm Password" required>
                                 <label id="wrong-password-label" class="text-danger"></label>
                             </div>

@@ -2,13 +2,11 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\InvoicePart;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class InvoiceService
 {
-
     /**
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|string|null
      */
@@ -18,29 +16,33 @@ class InvoiceService
     }
 
     /**
+     * @param $request
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function invoiceDashboard($request): LengthAwarePaginator
+    {
+        if ($request->search) {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Invoice::query()->filter(['search' => $request->search])->orderByDesc('created_at');
+            } else {
+                $invoices = Invoice::query()->filter(['search' => $request->search])->orderBy('created_at');
+            }
+        } else {
+            if ($request->sortByCreatedDate == 1) {
+                $invoices = Invoice::query()->orderByDesc('created_at');
+            } else {
+                $invoices = Invoice::query()->orderBy('created_at');
+            }
+        }
+        return $invoices->paginate(6);
+    }
+
+    /**
      * @param $invoiceId
      * @return mixed
      */
     public function getInvoice($invoiceId)
     {
         return Invoice::find($invoiceId);
-    }
-
-    /**
-     * @param $invoiceId
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function getInvoiceParts($invoiceId)
-    {
-        return InvoicePart::query()->where('invoice_id', $invoiceId)->get();
-    }
-
-    /**
-     * @param $clientId
-     * @return mixed
-     */
-    public function getClient($clientId)
-    {
-        return Client::find($clientId);
     }
 }

@@ -19,8 +19,8 @@ class CreateClientTable extends Migration
             $table->string('last_name');
             $table->bigInteger('phone')->nullable();
             $table->string('email')->nullable();
-            $table->dateTime('deleted_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

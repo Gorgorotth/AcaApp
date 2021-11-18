@@ -53,8 +53,9 @@
             </table>
         </div>
         <div class="col-md-4">
-            <form class="mx-2" method="post" action="{{route('admin.update-garage', ['garageId' => $garage['id']])}}">
+            <form class="mx-2" method="post" action="{{route('admin.garage.update', ['garage' => $garage['id']])}}">
                 @csrf
+                @method('put')
                 <div class="container border mb-4 pb-4">
                     <div class="modal-header">
                         <h4>Edit Garage</h4>
@@ -101,8 +102,8 @@
                                 Add Mechanic
                             </button>
                         </div>
-                        @include('admin.templates.add-email-template')
-                        @include('admin.templates.add-mechanic-template')
+                        @include('admin.garage.templates.add-email-template')
+                        @include('admin.garage.templates.add-mechanic-template')
                     </div>
                     <div class="mt-3">
                         <button class="btn btn-outline-primary">Edit</button>

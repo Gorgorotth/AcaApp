@@ -19,7 +19,7 @@ class CreateGarageTable extends Migration
             $table->string('address');
             $table->float('hourly_rate');
             $table->timestamps();
-            $table->dateTime('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

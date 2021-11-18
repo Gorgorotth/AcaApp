@@ -3,7 +3,7 @@
     <div class="row mt-4 d-flex justify-content-center">
         <div class="col-md-4">
             <div class="container border" id="invoiceCreateCarInfo">
-                <form method="post" id="create-mechanic-form" action="{{route('admin.store-mechanic')}}">
+                <form method="post" id="create-mechanic-form" action="{{route('admin.mechanic.store')}}">
                     @csrf
                     <div class="modal-header">
                         <h4>Create Mechanic</h4>

@@ -2,6 +2,8 @@
 
 namespace App\Services\Admin;
 
+use App\Services\ResponseService;
+
 class LoginService
 {
     /**
@@ -18,14 +20,14 @@ class LoginService
 
     /**
      * @param $request
-     * @return bool
+     * @return ResponseService
      */
-    public function loginAdmin($request): bool
+    public function loginAdmin($request): ResponseService
     {
         if (!auth('admin')->attempt($request->except('_token'))) {
-            return false;
+            return ResponseService::response(false, 'Wrong email or password');
         } else {
-            return true;
+            return ResponseService::response(true, 'Logged in as Admin');
         }
     }
 }

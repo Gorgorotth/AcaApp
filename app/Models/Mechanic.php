@@ -25,20 +25,6 @@ class Mechanic extends Authenticatable
     ];
 
     /**
-     * @param $query
-     * @param array $filters
-     */
-    public function scopeFilter($query, array $filters)
-    {
-        $query->when($filters['search'] ?? false, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%');
-            });
-        });
-    }
-
-    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array
@@ -56,6 +42,20 @@ class Mechanic extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @param $query
+     * @param array $filters
+     */
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        });
+    }
 
     /**
      * @param $password

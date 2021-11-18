@@ -4,7 +4,7 @@
         <div class="row d-flex justify-content-center">
             <div class="col-md-6">
                 <div class="container border mb-4 pb-4" id="invoiceCreateCarInfo">
-                    <form class="my-4" method="post" id="createPartForm" action="{{route('admin.store-garage')}}">
+                    <form class="my-4" method="post" id="createPartForm" action="{{route('admin.garage.store')}}">
                         @csrf
                         <div class="modal-header">
                             <h4>Create Garage</h4>
@@ -13,14 +13,14 @@
                             <label for="garage-name" class="col-md-3 col-form-label">Name:</label>
                             <div class="col-md-9">
                                 <input type="text" name="name" class="form-control" id="garage-name"
-                                       placeholder="" required>
+                                       value="{{old('name')}}" required>
                             </div>
                         </div>
                         <div class="row my-2">
                             <label for="garage-address" class="col-md-3 col-form-label">Address:</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="address" id="garage-address"
-                                       placeholder="/\"
+                                       value="{{old('address')}}"
                                        required>
                             </div>
                         </div>
@@ -28,7 +28,8 @@
                             <label for="garage-hourly-price" class="col-md-3 col-form-label">Hourly Price:</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="hourlyPrice" id="garage-hourly-price"
-                                       placeholder="CHF/hour"
+                                       placeholder="CHF/h"
+                                       value="{{old('hourlyPrice')}}"
                                        required>
                             </div>
                         </div>
@@ -52,8 +53,8 @@
                                 Add Mechanic
                             </button>
                         </div>
-                        @include('admin.templates.add-email-template')
-                        @include('admin.templates.add-mechanic-template')
+                        @include('admin.garage.templates.add-email-template')
+                        @include('admin.garage.templates.add-mechanic-template')
                         <button class="btn btn-primary" id="create-garage" type="submit">Create Garage</button>
                     </form>
                 </div>

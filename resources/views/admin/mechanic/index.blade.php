@@ -2,16 +2,25 @@
 @section('content')
     <div class="container">
         <div class="list-group">
-            <div class="row justify-content-between my-4">
-                <form method="get" action="{{route('admin.mechanic-dashboard')}}" class="d-flex col-sm-4">
-                    <input class="form-control me-2" type="text" name="search" placeholder="Search" aria-label="Search"
-                           value="{{request('search')}}">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
+            <div class="d-flex justify-content-between my-4">
+                <form method="get" action="{{route('admin.mechanic.index')}}"
+                      class="d-flex justify-content-between align-content-center col-sm-11">
+                    <div>
+                        <input class="form-control me-2" type="text" name="search" placeholder="Search"
+                               aria-label="Search"
+                               value="{{request('search')}}">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </div>
                 </form>
-                <form method="get" action="{{route('admin.mechanic-dashboard')}}" class="col-sm-2">
-                    <button class="btn btn-primary" value="{{$orderBy}}" name="sortByCreatedDate" type="submit">Sort by
-                        date
-                    </button>
+                <form method="get" action="{{route('admin.mechanic.index')}}" class="col-sm-2">
+                    <div class="end-50">
+                        <input type="hidden" name="sortByCreatedDate" value="{{$orderBy}}">
+
+                        <input hidden name="search" placeholder="Search" aria-label="Search"
+                               value="{{request('search')}}">
+                        <button class="text-start btn btn-primary" type="submit">Sort by date</button>
+                    </div>
+
                 </form>
             </div>
             <div class="container">
@@ -50,7 +59,7 @@
                                     {{$mechanic['email']}}
                                 </th>
                                 <th>
-                                    <a href="{{route('admin.edit-mechanic', ['mechanicId' => $mechanic['id']])}}"
+                                    <a href="{{route('admin.mechanic.edit', ['mechanic' => $mechanic['id']])}}"
                                        class="btn btn-outline-primary">Edit</a>
                                 </th>
                                 <th>
@@ -58,7 +67,7 @@
                                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal{{$key}}">Delete
                                         </button>
-                                        @include('admin.templates.delete-mechanic-template')
+                                        @include('admin.mechanic.templates.delete-mechanic-template')
                                     </div>
                                 </th>
                             </tr>

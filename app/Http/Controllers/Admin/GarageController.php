@@ -11,6 +11,7 @@ use App\Services\Admin\MechanicService;
 
 class GarageController extends Controller
 {
+
     /**
      * @var MechanicService
      */
@@ -33,7 +34,18 @@ class GarageController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function createGarage()
+    public function index()
+    {
+        return view('admin.garage.index', [
+            'garages' => $this->garageService->garageDashboard(request()),
+            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
+        ]);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function create()
     {
         return view('admin.garage.create', [
             'unemployedMechanics' => $this->mechanicService->getUnemployedMechanics()
@@ -44,48 +56,56 @@ class GarageController extends Controller
      * @param StoreGarageRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storeGarage(StoreGarageRequest $request)
+    public function store(StoreGarageRequest $request)
     {
-        if ($this->garageService->storeGarage($request)) {
-            return redirect(route('admin.garage-dashboard'))->with('success', 'Garage Created');
+        $garage = $this->garageService->storeGarage($request);
+        if ($garage->getSuccess()) {
+            return redirect(route('admin.garage.index'))->with('success', $garage->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $garage->getMessage());
 
     }
 
     /**
+     * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function garageDashboard()
+    public function edit($id)
     {
-        return view('admin.garage.dashboard', [
-            'garages' => $this->mechanicService->dashboard(request()->search, Garage::class),
-            'orderBy' => request()->sortByCreatedDate
+        return view('admin.garage.edit', [
+            'garage' => $this->garageService->getGarage($id),
+            'garageEmails' => $this->garageService->getEmailsForGarage($id),
+            'garageMechanics' => $this->garageService->getMechanicsForGarage($id),
+            'unemployedMechanics' => $this->mechanicService->getUnemployedMechanics(),
+            'deletedEmails' => $this->garageService->getDeletedEmailsForGarage($id)
         ]);
     }
 
     /**
-     * @param $emailId
+     * @param UpdateGarageRequest $request
+     * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteEmail($emailId)
+    public function update(UpdateGarageRequest $request, $id)
     {
-        if ($this->garageService->deleteEmail($emailId)) {
-            return back()->with('success', 'Email is deleted');
+        $garage = $this->garageService->updateGarage($request, $id);
+        if ($garage->getSuccess()) {
+            return back()->with('success', $garage->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $garage->getMessage());
     }
 
     /**
-     * @param $emailId
+     * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function restoreEmail($emailId)
+    public function destroy($id)
     {
-        if ($this->garageService->restoreEmail($emailId)) {
-            return back()->with('success', 'Email restored');
+        $garage = $this->garageService->deleteGarage($id);
+        if ($garage->getSuccess()) {
+            return back()->with('success', $garage->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $garage->getMessage());
     }
 
     /**
@@ -94,50 +114,36 @@ class GarageController extends Controller
      */
     public function removeMechanic($mechanicId)
     {
-        if ($this->garageService->removeMechanic($mechanicId)) {
-            return back()->with('success', 'Mechanic is removed');
+        $mechanic = $this->garageService->removeMechanic($mechanicId);
+        if ($mechanic->getSuccess()) {
+            return back()->with('success', $mechanic->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
-
+        return back()->with('error', $mechanic->getMessage());
     }
 
     /**
-     * @param $garageId
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function edit($garageId)
-    {
-        return view('admin.garage.edit', [
-            'garage' => $this->garageService->getGarage($garageId),
-            'garageEmails' => $this->garageService->getEmailsForGarage($garageId),
-            'garageMechanics' => $this->garageService->getMechanicsForGarage($garageId),
-            'unemployedMechanics' => $this->mechanicService->getUnemployedMechanics(),
-            'deletedEmails' => $this->garageService->getDeletedEmailsForGarage($garageId)
-        ]);
-    }
-
-    /**
-     * @param UpdateGarageRequest $request
-     * @param $garageId
+     * @param $emailId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateGarageRequest $request, $garageId)
+    public function deleteEmail($emailId)
     {
-        if ($this->garageService->updateGarage($request, $garageId)) {
-            return back()->with('success', 'Update Successful');
+        $email = $this->garageService->deleteEmail($emailId);
+        if ($email->getSuccess()) {
+            return back()->with('success', $email->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $email->getMessage());
     }
 
     /**
-     * @param $garageId
+     * @param $emailId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteGarage($garageId)
+    public function restoreEmail($emailId)
     {
-        if ($this->garageService->deleteGarage($garageId)) {
-            return back()->with('success', 'Garage deleted successfully');
+        $email = $this->garageService->restoreEmail($emailId);
+        if ($email->getSuccess()) {
+            return back()->with('success', $email->getMessage());
         }
-        return back()->with('error', 'Something went wrong');
+        return back()->with('error', $email->getMessage());
     }
 }

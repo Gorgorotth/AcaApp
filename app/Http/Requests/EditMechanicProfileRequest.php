@@ -26,7 +26,7 @@ class EditMechanicProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'min:3'],
-            'email' => ['nullable', 'email', Rule::unique('mechanics', 'email')],
+            'email' => ['nullable', 'email', Rule::unique('mechanics', 'email')->ignore(auth()->id())],
             'password' => ['required']
         ];
     }

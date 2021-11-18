@@ -39,10 +39,11 @@ class LoginController extends Controller
      */
     public function store(LoginStoreRequest $request)
     {
-        if ($this->loginService->store($request)) {
-            return redirect(route('mechanic.dashboard'))->with('success', 'Logged in successfully');
+        $user = $this->loginService->store($request);
+        if ($user->getSuccess()) {
+            return redirect(route('mechanic.dashboard'))->with('success', $user->getMessage());
         } else {
-            return back()->with('password', 'Wrong email or password');
+            return back()->with('password', $user->getMessage());
         }
     }
 

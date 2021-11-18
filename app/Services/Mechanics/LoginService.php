@@ -2,6 +2,8 @@
 
 namespace App\Services\Mechanics;
 
+use App\Services\ResponseService;
+
 class LoginService
 {
     /**
@@ -18,14 +20,14 @@ class LoginService
 
     /**
      * @param $request
-     * @return bool
+     * @return ResponseService
      */
-    public function store($request): bool
+    public function store($request): ResponseService
     {
         if (auth()->attempt($request->except('_token'))) {
-            return true;
+            return ResponseService::response(true, 'Logged in successfully');
         } else {
-            return false;
+            return ResponseService::response(false, 'Wrong email or password');
         }
     }
 }
