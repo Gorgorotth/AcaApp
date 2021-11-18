@@ -6,13 +6,14 @@
                 <div class="col-md-6 col-sm-6 text-left">
                     <h4><strong>Car</strong> Details</h4>
                     <ul class="list-unstyled">
+                        <li><strong>Invoice No:</strong> {{$invoice['invoice_number']}}</li>
                         <li><strong>VIN:</strong> {{$invoice['vin']}}</li>
                         <li><strong>License Plate:</strong> {{$invoice['license_plate']}}</li>
                         <li><strong>Brand:</strong> {{$invoice['brand']}}</li>
                         <li><strong>Model:</strong> {{$invoice['model']}}</li>
                     </ul>
                 </div>
-                <div class="col-md-6 col-sm-6 text-left">
+                <div class="col-md-6 col-sm-6 text-start">
                     <h4><strong>Owner</strong> Details</h4>
                     <ul class="list-unstyled">
                         <li><strong>Name:</strong> {{$client['name']}}</li>
@@ -27,7 +28,7 @@
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Part</th>
+                        <th class="col-md-5">Item Part</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -50,13 +51,12 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="table-responsive py-2">
                 <h5>Liquid</h5>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Liquid</th>
+                        <th class="col-md-5">Item Liquid</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -78,13 +78,12 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="table-responsive pt-2">
                 <h5>Work</h5>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Work</th>
+                        <th class="col-md-5">Item Work</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -119,7 +118,6 @@
                         {{$invoice['created_at']}}
                     </p>
                 </div>
-
                 <div class="col text-right">
                     <ul class="list-unstyled">
                         <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>

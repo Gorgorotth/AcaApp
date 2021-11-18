@@ -28,7 +28,8 @@
                         <div class="row my-2">
                             <label for="inputBrand" class="col-sm-2 col-form-label">Brand:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="inputBrand" id="inputBrand" placeholder="Audi"
+                                <input type="text" class="form-control" name="inputBrand" id="inputBrand"
+                                       placeholder="Audi"
                                        value="{{old('inputBrand')}}"
                                        required>
                             </div>
@@ -36,7 +37,8 @@
                         <div class="row my-2">
                             <label for="inputModel" class="col-sm-2 col-form-label">Model:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="inputModel" id="inputModel" placeholder="Q8"
+                                <input type="text" class="form-control" name="inputModel" id="inputModel"
+                                       placeholder="Q8"
                                        value="{{old('inputModel')}}"
                                        required>
                             </div>
@@ -53,7 +55,7 @@
                             <div class="col-sm-9">
                                 <input type="text" name="inputClientName" class="form-control" id="input-name"
                                        value="{{old('inputClientName')}}"
-                                       placeholder="Required!" >
+                                       placeholder="Required!">
                             </div>
                         </div>
                         <div class="row my-2">
@@ -71,14 +73,15 @@
                                 <input type="text" class="form-control" name="inputClientPhone" id="input-phone"
                                        value="{{old('inputClientPhone')}}"
                                        placeholder="5553335555"
-                                       >
+                                >
                             </div>
                         </div>
                         <div class="row my-2">
                             <label for="input-email" class="col-sm-2 col-form-label">Email:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="inputClientEmail" id="input-email" placeholder="client@example.com"
-                                value="{{old('inputClientEmail')}}"
+                                <input type="text" class="form-control" name="inputClientEmail" id="input-email"
+                                       placeholder="client@example.com"
+                                       value="{{old('inputClientEmail')}}"
                                 >
                             </div>
                         </div>

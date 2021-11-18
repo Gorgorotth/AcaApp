@@ -26,9 +26,8 @@ class GarageService
             ]);
             if ($emails = $request->addEmailToGarage) {
                 foreach ($emails as $email) {
-                    GarageEmail::query()->create([
+                    $garage->emails()->create([
                         'email' => $email,
-                        'garage_id' => $garage->id
                     ]);
                 }
             }
@@ -140,7 +139,7 @@ class GarageService
     {
         try {
             DB::beginTransaction();
-            Garage::query()->where('id', $garageId)->update([
+            $this->getGarage($garageId)->update([
                 'name' => $request->name,
                 'address' => $request->address,
                 'hourly_rate' => $request->hourlyRate
@@ -154,9 +153,8 @@ class GarageService
             }
             if ($emails = $request->addEmailToGarage) {
                 foreach ($emails as $i => $email) {
-                    GarageEmail::query()->create([
+                    $this->getGarage($garageId)->emails()->create([
                         'email' => $email,
-                        'garage_id' => $garageId
                     ]);
                 }
             }
@@ -207,11 +205,12 @@ class GarageService
     {
         try {
             DB::beginTransaction();
-            $this->getGarage($garageId)->delete();
-            Mechanic::query()->where('garage_id', $garageId)->update([
+            $garage = $this->getGarage($garageId);
+            $garage->delete();
+            $garage->mechanics()->update([
                 'garage_id' => null
             ]);
-            GarageEmail::query()->where('garage_id', $garageId)->delete();
+            $garage->emails()->delete();
             DB::commit();
             return ResponseService::response(true, 'Garage deleted successfully');
         } catch (\Exception $e) {

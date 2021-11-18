@@ -9,9 +9,7 @@
 </head>
 <body>
 @auth()
-
     <header class="border-bottom">
-
         <div class="container">
             <ul class="nav nav-pills justify-content-between  py-2">
                 <li class="nav-item"><a href="{{route('admin.dashboard')}}" class="nav-link">Dashboard</a></li>

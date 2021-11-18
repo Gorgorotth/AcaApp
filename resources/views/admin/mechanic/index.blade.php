@@ -5,7 +5,7 @@
             <div class="d-flex justify-content-between my-4">
                 <form method="get" action="{{route('admin.mechanic.index')}}"
                       class="d-flex justify-content-between align-content-center col-sm-11">
-                    <div>
+                    <div class="d-flex justify-content-between">
                         <input class="form-control me-2" type="text" name="search" placeholder="Search"
                                aria-label="Search"
                                value="{{request('search')}}">
@@ -20,7 +20,6 @@
                                value="{{request('search')}}">
                         <button class="text-start btn btn-primary" type="submit">Sort by date</button>
                     </div>
-
                 </form>
             </div>
             <div class="container">
@@ -31,7 +30,6 @@
                             <th class="col-md-2">
                                 Date
                             </th>
-
                             <th class="col-md-3">
                                 Mechanic Name
                             </th>

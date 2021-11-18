@@ -6,6 +6,7 @@
                 <div class="col-md-6 col-sm-6 text-left">
                     <h4><strong>Car</strong> Details</h4>
                     <ul class="list-unstyled">
+                        <li><strong>Invoice No:</strong> {{$invoice['invoice_number']}}</li>
                         <li><strong>VIN:</strong> {{$invoice['vin']}}</li>
                         <li><strong>License Plate:</strong> {{$invoice['license_plate']}}</li>
                         <li><strong>Brand:</strong> {{$invoice['brand']}}</li>
@@ -27,7 +28,7 @@
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Part</th>
+                        <th class="col-md-5">Item Part</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -36,27 +37,26 @@
                     <tbody>
                     @foreach($invoiceParts as $invoicePart)
                         @if($invoicePart->job_type == $invoicePart->typePart)
-                        <tr>
-                            <td>
-                                <div><strong>{{$invoicePart['name']}}</strong></div>
-                                <small>Stock No: {{$invoicePart['stock_no']}}</small>
-                            </td>
-                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
-                            <td>{{$invoicePart['price'] . $currency}}</td>
-                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                    <small>Stock No: {{$invoicePart['stock_no']}}</small>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
                         @endif
                     @endforeach
                     </tbody>
                 </table>
             </div>
-
             <div class="table-responsive py-2">
                 <h5>Liquid</h5>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Liquid</th>
+                        <th class="col-md-5">Item Liquid</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -65,26 +65,25 @@
                     <tbody>
                     @foreach($invoiceParts as $invoicePart)
                         @if($invoicePart->job_type == $invoicePart->typeLiquid)
-                        <tr>
-                            <td>
-                                <div><strong>{{$invoicePart['name']}}</strong></div>
-                            </td>
-                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
-                            <td>{{$invoicePart['price'] . $currency}}</td>
-                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
                         @endif
                     @endforeach
                     </tbody>
                 </table>
             </div>
-
             <div class="table-responsive pt-2">
                 <h5>Work</h5>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Item Work</th>
+                        <th class="col-md-5">Item Work</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
@@ -93,14 +92,14 @@
                     <tbody>
                     @foreach($invoiceParts as $invoicePart)
                         @if($invoicePart->job_type == $invoicePart->typeWork)
-                        <tr>
-                            <td>
-                                <div><strong>{{$invoicePart['name']}}</strong></div>
-                            </td>
-                            <td>{{$invoicePart['ConvertedQuantity']}}</td>
-                            <td>{{$invoicePart['price'] . $currency}}</td>
-                            <td>{{$invoicePart['totalPrice'] . $currency}}</td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <div><strong>{{$invoicePart['name']}}</strong></div>
+                                </td>
+                                <td>{{$invoicePart['ConvertedQuantity']}}</td>
+                                <td>{{$invoicePart['price'] . $currency}}</td>
+                                <td>{{$invoicePart['totalPrice'] . $currency}}</td>
+                            </tr>
                         @endif
                     @endforeach
                     </tbody>
@@ -125,12 +124,15 @@
                         <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>
                     </ul>
                     <div>
-                        <a class="btn btn-outline-info" href="{{route('mechanic.exportInvoiceToPdf', ['invoiceId' => $invoice['id']])}}">EXPORT TO PDF</a>
+                        <a class="btn btn-outline-info"
+                           href="{{route('mechanic.exportInvoiceToPdf', ['invoiceId' => $invoice['id']])}}">EXPORT TO
+                            PDF</a>
                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             DELETE INVOICE
                         </button>
-                        <form method="post" action="{{route('mechanic.deleteInvoice', ['invoiceId' => $invoice['id']])}}">
+                        <form method="post"
+                              action="{{route('mechanic.deleteInvoice', ['invoiceId' => $invoice['id']])}}">
                             @csrf
                             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal"
                                  aria-hidden="true">

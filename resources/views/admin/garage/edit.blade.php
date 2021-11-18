@@ -26,9 +26,10 @@
                             {{$deletedEmail['email']}}
                         </th>
                         <th>
-                            <form method="post" action="{{route('admin.garage-restore-email', ['emailId' => $deletedEmail['id']])}}">
+                            <form method="post"
+                                  action="{{route('admin.garage-restore-email', ['emailId' => $deletedEmail['id']])}}">
                                 @csrf
-                            <button class="btn btn-outline-info btn-light">Restore</button>
+                                <button class="btn btn-outline-info btn-light">Restore</button>
                             </form>
                         </th>
                     </tr>
@@ -85,7 +86,6 @@
 
                     </div>
                     <div class="add-garage-mechanic-here border-top border-bottom">
-
                     </div>
                     <div>
                         <div class="btn">
@@ -141,7 +141,6 @@
                     </tr>
                 @endforeach
                 </tbody>
-
             </table>
         </div>
     </div>

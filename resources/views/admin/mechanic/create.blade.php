@@ -12,7 +12,7 @@
                         <label for="create-mechanic-name" class="col-md-3 col-form-label">Name:</label>
                         <div class="col-md-9">
                             <input type="text" name="name" class="form-control" id="create-mechanic-name"
-                                    required>
+                                   required>
                         </div>
                     </div>
                     <div class="row my-2">
@@ -30,15 +30,19 @@
                         </div>
                     </div>
                     <div class="row my-2">
-                        <label for="create-mechanic-confirm-password" class="col-md-5 col-form-label">Confirm Password:</label>
+                        <label for="create-mechanic-confirm-password" class="col-md-5 col-form-label">Confirm
+                            Password:</label>
                         <div class="col-md-7">
-                            <input type="password" class="form-control" name="password_confirmation" id="create-mechanic-confirm-password"
+                            <input type="password" class="form-control" name="password_confirmation"
+                                   id="create-mechanic-confirm-password"
                                    required>
                             <label id="create-mechanic-error-label" class="text-danger"></label>
                         </div>
                     </div>
                     <div class="text-center">
-                    <button type="button" class="btn btn-outline-primary my-3" id="create-mechanic-submit-btn">Create Mechanic</button>
+                        <button type="button" class="btn btn-outline-primary my-3" id="create-mechanic-submit-btn">
+                            Create Mechanic
+                        </button>
                     </div>
                 </form>
             </div>

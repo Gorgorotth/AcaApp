@@ -28,7 +28,6 @@
                         <div class="col-sm-9">
                             <select class="form-select" name="garageId" id="garage">
                                 <option value="-1">None</option>
-
                                 @foreach($garages as $garage)
                                     <option {{$garage == $mechanic->garage ? 'selected' : ''}} value="{{$garage->id}}">{{$garage->name}}</option>
                                 @endforeach

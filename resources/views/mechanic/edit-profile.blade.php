@@ -5,7 +5,6 @@
             <div class="col-md-6">
                 <form class="my-4" method="post" action="{{route('mechanic.edit-mechanic-profile')}}">
                     @csrf
-
                     <div class="container border mb-4 pb-4">
                         <div class="modal-header">
                             <h4>Edit Profile</h4>
@@ -39,7 +38,8 @@
                 </form>
             </div>
             <div class="col-md-6">
-                <form class="my-4" method="post" id="changeMechanicPassword" action="{{route('mechanic.change-mechanic-password')}}">
+                <form class="my-4" method="post" id="changeMechanicPassword"
+                      action="{{route('mechanic.change-mechanic-password')}}">
                     @csrf
                     <div class="container border mb-4 pb-4">
                         <div class="modal-header">
@@ -62,13 +62,15 @@
                         <div class="row my-2">
                             <label for="confirm-password" class="col-sm-5 col-form-label">Confirm Password:</label>
                             <div class="col-sm-7">
-                                <input type="password" class="form-control" name="password_confirmation" id="confirm-password"
+                                <input type="password" class="form-control" name="password_confirmation"
+                                       id="confirm-password"
                                        placeholder="Confirm Password" required>
                                 <label id="wrong-password-label" class="text-danger"></label>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <button class="btn btn-outline-primary" id="changeMechanicPasswordBtn">Change Password</button>
+                            <button class="btn btn-outline-primary" id="changeMechanicPasswordBtn">Change Password
+                            </button>
                         </div>
                     </div>
                 </form>

@@ -44,7 +44,6 @@
                 </tbody>
             </table>
         </div>
-
         <hr>
         <div class="row">
             <div class="col-sm-6 text-left">

@@ -102,7 +102,7 @@ class MechanicService
     public function deleteMechanic($mechanicId): ResponseService
     {
         try {
-            Mechanic::query()->find($mechanicId)->delete();
+            $this->getMechanic($mechanicId)->delete();
             return ResponseService::response(true, 'Mechanic is deleted');
         } catch (\Exception $e) {
             captureException($e);
