@@ -38,7 +38,7 @@ class GarageController extends Controller
     {
         return view('admin.garage.index', [
             'garages' => $this->garageService->garageDashboard(request()),
-            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
+            'orderBy' => request()->sortByCreatedDate == Garage::SORT_ASC ? Garage::SORT_DESC : Garage::SORT_ASC
         ]);
     }
 

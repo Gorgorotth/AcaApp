@@ -11,6 +11,9 @@ class Garage extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const SORT_ASC = 'asc';
+    public const SORT_DESC = 'desc';
+
     /**
      * @var string[]
      */

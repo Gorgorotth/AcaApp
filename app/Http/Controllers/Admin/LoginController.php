@@ -50,8 +50,7 @@ class LoginController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public
-    function destroy()
+    public function destroy()
     {
         auth('admin')->logout();
         return redirect(route('admin.home'))->with('success', 'Logged out successfully');

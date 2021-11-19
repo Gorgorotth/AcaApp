@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Services\Admin\GarageService;
 use App\Services\Admin\InvoiceService;
 use App\Services\Admin\MechanicService;
@@ -58,7 +59,7 @@ class IndexController extends Controller
     {
         return view('admin.index', [
             'invoices' => $this->invoiceService->invoiceDashboard(request()),
-            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
+            'orderBy' => request()->sortByCreatedDate == Invoice::SORT_ASC ? Invoice::SORT_DESC : Invoice::SORT_ASC
         ]);
     }
 }

@@ -12,6 +12,9 @@ class Mechanic extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    public const SORT_ASC = 'asc';
+    public const SORT_DESC = 'desc';
+
     /**
      * The attributes that are mass assignable.
      *

@@ -9,36 +9,32 @@ use App\Models\InvoicePart;
 use App\Services\ResponseService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceService
 {
+
     /**
      * @param Request $request
      * @param $garageId
-     * @param $orderBy
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return LengthAwarePaginator
      */
-    public function dashboard(Request $request, $garageId)
+    public function dashboard(Request $request, $garageId):LengthAwarePaginator
     {
+        $invoices = Invoice::query()->where('garage_id', $garageId);
+
         if ($request->search) {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Invoice::query()->where('garage_id',
-                    $garageId)->filter(['search' => $request->search])->orderByDesc('created_at');
-            } else {
-                $invoices = Invoice::query()->where('garage_id',
-                    $garageId)->filter(['search' => $request->search])->orderBy('created_at');
-            }
-        } else {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Invoice::query()->where('garage_id',
-                    $garageId)->orderByDesc('created_at');
-            } else {
-                $invoices = Invoice::query()->where('garage_id',
-                    $garageId)->orderBy('created_at');
-            }
+            $invoices->filter(['search' => $request->search]);
         }
+
+        if ($request->sortByCreatedDate == Invoice::SORT_DESC) {
+            $invoices->orderByDesc('created_at');
+        } else {
+            $invoices->orderBy('created_at');
+        }
+
         return $invoices->paginate(6);
     }
 
@@ -77,18 +73,15 @@ class InvoiceService
         return Invoice::find($invoiceId);
     }
 
+
     /**
-     * @param $invoice
+     * @param Invoice $invoice
      * @param $authorId
      * @return bool
      */
-    public function checkAuthor($invoice, $authorId): bool
+    public function checkAuthor(Invoice $invoice, $authorId): bool
     {
-        if ($invoice['mechanic_id'] == $authorId) {
-            return true;
-        } else {
-            return false;
-        }
+       return $invoice->mechanic_id == $authorId;
     }
 
     /**

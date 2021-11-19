@@ -21,19 +21,18 @@ class InvoiceService
      */
     public function invoiceDashboard($request): LengthAwarePaginator
     {
+        $invoices = Invoice::query();
+
         if ($request->search) {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Invoice::query()->filter(['search' => $request->search])->orderByDesc('created_at');
-            } else {
-                $invoices = Invoice::query()->filter(['search' => $request->search])->orderBy('created_at');
-            }
-        } else {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Invoice::query()->orderByDesc('created_at');
-            } else {
-                $invoices = Invoice::query()->orderBy('created_at');
-            }
+            $invoices->filter(['search' => $request->search]);
         }
+
+        if ($request->sortByCreatedDate == Invoice::SORT_DESC) {
+            $invoices->orderByDesc('created_at');
+        } else {
+            $invoices->orderBy('created_at');
+        }
+
         return $invoices->paginate(6);
     }
 
@@ -41,8 +40,10 @@ class InvoiceService
      * @param $invoiceId
      * @return mixed
      */
-    public function getInvoice($invoiceId)
-    {
+    public
+    function getInvoice(
+        $invoiceId
+    ) {
         return Invoice::find($invoiceId);
     }
 }

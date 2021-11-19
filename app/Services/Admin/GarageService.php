@@ -181,19 +181,18 @@ class GarageService
      */
     public function garageDashboard($request): LengthAwarePaginator
     {
+        $invoices = Garage::query();
+
         if ($request->search) {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Garage::query()->filter(['search' => $request->search])->orderByDesc('created_at');
-            } else {
-                $invoices = Garage::query()->filter(['search' => $request->search])->orderBy('created_at');
-            }
-        } else {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Garage::query()->orderByDesc('created_at');
-            } else {
-                $invoices = Garage::query()->orderBy('created_at');
-            }
+            $invoices->filter(['search' => $request->search]);
         }
+
+        if ($request->sortByCreatedDate == Garage::SORT_DESC) {
+            $invoices->orderByDesc('created_at');
+        } else {
+            $invoices->orderBy('created_at');
+        }
+
         return $invoices->paginate(6);
     }
 

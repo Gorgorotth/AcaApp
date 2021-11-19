@@ -36,7 +36,7 @@ class MechanicController extends Controller
     {
         return view('admin.mechanic.index', [
             'mechanics' => $this->mechanicService->mechanicDashboard(request()),
-            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1
+            'orderBy' => request()->sortByCreatedDate == Mechanic::SORT_ASC ? Mechanic::SORT_DESC : Mechanic::SORT_ASC
         ]);
     }
 

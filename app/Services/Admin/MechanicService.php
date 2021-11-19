@@ -26,34 +26,24 @@ class MechanicService
     }
 
     /**
-     * @param $mechanicId
-     * @return ?Mechanic
-     */
-    public function getMechanic($mechanicId): ?Mechanic
-    {
-        return Mechanic::find($mechanicId);
-    }
-
-    /**
      * @param $request
      * @return LengthAwarePaginator
      */
     public function mechanicDashboard($request): LengthAwarePaginator
     {
+        $mechanics = Mechanic::query();
+
         if ($request->search) {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Mechanic::query()->filter(['search' => $request->search])->orderByDesc('created_at');
-            } else {
-                $invoices = Mechanic::query()->filter(['search' => $request->search])->orderBy('created_at');
-            }
-        } else {
-            if ($request->sortByCreatedDate == 1) {
-                $invoices = Mechanic::query()->orderByDesc('created_at');
-            } else {
-                $invoices = Mechanic::query()->orderBy('created_at');
-            }
+            $mechanics->filter(['search' => $request->search]);
         }
-        return $invoices->paginate(6);
+
+        if ($request->sortByCreatedDate == Mechanic::SORT_DESC) {
+            $mechanics->orderByDesc('created_at');
+        } else {
+            $mechanics->orderBy('created_at');
+        }
+
+        return $mechanics->paginate(6);
     }
 
     /**
@@ -108,5 +98,14 @@ class MechanicService
             captureException($e);
         }
         return ResponseService::response(false, 'Something went wrong');
+    }
+
+    /**
+     * @param $mechanicId
+     * @return ?Mechanic
+     */
+    public function getMechanic($mechanicId): ?Mechanic
+    {
+        return Mechanic::find($mechanicId);
     }
 }

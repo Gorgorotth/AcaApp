@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeMechanicPasswordRequest;
 use App\Http\Requests\EditMechanicProfileRequest;
 use App\Http\Requests\StoreInvoiceRequest;
+use App\Models\Invoice;
 use App\Models\Mechanic;
 use App\Services\Mechanics\InvoiceService;
 use App\Services\Mechanics\MechanicService;
@@ -43,7 +44,7 @@ class MechanicController extends Controller
 
         return view('mechanic.invoices.index', [
             'invoices' => $this->invoiceService->dashboard(request(), auth()->user()->garage_id),
-            'orderBy' => request()->sortByCreatedDate == 1 ? 0 : 1,
+            'orderBy' => request()->sortByCreatedDate == Invoice::SORT_ASC ? Invoice::SORT_DESC : Invoice::SORT_ASC
         ]);
     }
 
