@@ -22,7 +22,7 @@ class CreateInvoiceTable extends Migration
             $table->string('license_plate');
             $table->string('brand');
             $table->string('model');
-            $table->string('invoice_number')->nullable();
+            $table->string('invoice_number')->nullable()->unique();
             $table->float('total_price')->nullable();
             $table->float('hourly_price');
             $table->timestamps();

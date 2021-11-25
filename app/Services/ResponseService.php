@@ -34,9 +34,9 @@ class ResponseService
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
-    public function getSuccess()
+    public function getSuccess(): bool
     {
         return $this->success;
     }

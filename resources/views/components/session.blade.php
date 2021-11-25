@@ -6,7 +6,7 @@
 
     <input type="hidden" value="{{session()->get('error')}}" id="session-custom-error">
 
-@elseif($errors->any())
+@elseif($errors && $errors->any())
     @foreach($errors->all() as $error)
 
         <input type="hidden" value="{{$error}}" class="session-catch-exception">

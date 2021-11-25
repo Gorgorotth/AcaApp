@@ -32,3 +32,7 @@ Route::group(['prefix' => 'mechanic', 'middleware' => ['auth']], function () {
     Route::post('invoice/delete/{invoiceId}', [MechanicController::class, 'deleteInvoice'])->name('mechanic.deleteInvoice');
 
 });
+
+Route::fallback(function () {
+    return response(view('mechanic.errors.404'),404);
+});

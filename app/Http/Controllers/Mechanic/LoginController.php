@@ -26,10 +26,10 @@ class LoginController extends Controller
      */
     public function index()
     {
-        if ($this->loginService->checkIfLoggedIn() == false) {
-            return view('mechanic.login.index');
-        } else {
+        if ($this->loginService->checkIfLoggedIn()) {
             return redirect(route('mechanic.dashboard'));
+        } else {
+            return view('mechanic.login.index');
         }
     }
 

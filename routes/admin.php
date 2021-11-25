@@ -32,3 +32,9 @@ Route::group(['middleware' => ['auth.admin']], function () {
     Route::resource('mechanic', 'MechanicController');
 
 });
+
+Route::fallback(function () {
+
+    return response(view('admin.errors.404'),404);
+
+});
