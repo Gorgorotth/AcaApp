@@ -1,0 +1,35 @@
+/**
+ *
+ * Apply Here your Custom CSS
+ *
+*/
+
+html, body {
+	height: 100%;
+    position: relative;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.page-title {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.page-title h2 {
+    margin: 0;
+}
+
+.page-title-controls {
+    text-align: right;
+}
+
+.modal-backdrop {
+    display: none !important;
+}
+
+.modal.in {
+    background-color: rgba(0, 0, 0, 0.5);
+}

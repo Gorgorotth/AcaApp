@@ -1,26 +1,49 @@
-@extends('admin.layout')
+@extends('admin.layout', ['bodyClass' => 'login-page login-form-fall login-form-fall-init'])
 @section('content')
-    <div class="container d-flex justify-content-center my-4">
-        <div class="row col-md-4 ">
-            <div class="text-center ">
-                <strong>LOGIN</strong>
+    <div class="login-container">
+        <div class="login-header login-caret">
+            <div class="login-content">
+                <a href="index.html" class="logo">
+                    <img src="images/logo@2x.png" width="120" alt=""/>
+                </a>
+                <p class="description">Dear admin, log in to access the admin area!</p>
             </div>
-            <form method="post" action="{{route('admin.login')}}" class=" border p-4">
-                @csrf
-                <div class="mb-3">
-                    <label for="admin-email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="admin-email" name="email" value="{{old('email')}}"
-                           placeholder="email@example.com">
+        </div>
+        <div class="login-form">
+            <div class="login-content">
+                <form method="post" action="{{route('admin.login')}}" role="form" id="form_login">
+                    @csrf
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="entypo-user"></i>
+                            </div>
+                            <input type="text" class="form-control" name="email" id="email" placeholder="Email"
+                                   autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="entypo-key"></i>
+                            </div>
+                            <input type="password" class="form-control" name="password" id="password"
+                                   placeholder="Password" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block btn-login">
+                            <i class="entypo-login"></i>
+                            Login In
+                        </button>
+                    </div>
+                </form>
+                <div class="login-bottom-links">
+                    <a href="extra-forgot-password.html" class="link">Forgot your password?</a>
+                    <br/>
+                    <a href="#">ToS</a> - <a href="#">Privacy Policy</a>
                 </div>
-                <div class="mb-3">
-                    <label for="admin-password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="admin-password" name="password"
-                           placeholder="Password">
-                </div>
-                <div class="mb-3">
-                </div>
-                <button type="submit" class="btn btn-primary">Log in</button>
-            </form>
+            </div>
         </div>
     </div>
 @endsection

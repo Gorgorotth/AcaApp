@@ -15,12 +15,12 @@ class MechanicController extends Controller
     /**
      * @var MechanicService
      */
-    public $mechanicService;
+    protected $mechanicService;
 
     /**
      * @var GarageService
      */
-    public $garageService;
+    protected $garageService;
 
     /**
      * @param MechanicService $mechanicService

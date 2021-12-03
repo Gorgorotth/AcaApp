@@ -11,7 +11,7 @@ class LoginController extends Controller
     /**
      * @var LoginService
      */
-    public $loginService;
+    protected $loginService;
 
     /**
      * @param LoginService $loginService
@@ -40,7 +40,7 @@ class LoginController extends Controller
     public function store(LoginStoreRequest $request)
     {
         $admin = $this->loginService->loginAdmin($request);
-        if ($admin->getSuccess()) {
+        if (!$admin->getSuccess()) {
             return back()->with('error', $admin->getMessage());
         } else {
             return redirect(route('admin.dashboard'))->with('success', $admin->getMessage());

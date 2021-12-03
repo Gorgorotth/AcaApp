@@ -13,15 +13,15 @@ class IndexController extends Controller
     /**
      * @var InvoiceService
      */
-    public $invoiceService;
+    protected $invoiceService;
     /**
      * @var MechanicService
      */
-    public $mechanicService;
+    protected $mechanicService;
     /**
      * @var GarageService
      */
-    public $garageService;
+    protected $garageService;
 
     /**
      * @param InvoiceService $invoiceService

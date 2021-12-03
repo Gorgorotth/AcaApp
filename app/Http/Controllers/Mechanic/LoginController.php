@@ -11,7 +11,7 @@ class LoginController extends Controller
     /**
      * @var LoginService
      */
-    public $loginService;
+    protected $loginService;
 
     /**
      * @param LoginService $loginService
@@ -43,7 +43,7 @@ class LoginController extends Controller
         if ($user->getSuccess()) {
             return redirect(route('mechanic.dashboard'))->with('success', $user->getMessage());
         } else {
-            return back()->with('password', $user->getMessage());
+            return back()->with('error', $user->getMessage());
         }
     }
 

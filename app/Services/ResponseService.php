@@ -8,6 +8,7 @@ class ResponseService
      * @var
      */
     private $success;
+
     /**
      * @var
      */

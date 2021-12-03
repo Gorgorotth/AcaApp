@@ -1,26 +1,21 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Neon Admin Panel" />
+    <meta name="author" content="" />
+
     <title>Invoices</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
+
     <link href="{{mix('css/app.css')}}" rel="stylesheet">
+
+    <script src="/js/jquery-1.11.0.min.js"></script>
 </head>
-<body>
-@auth()
-    <header class="border-bottom">
-        <div class="container">
-            <ul class="nav nav-pills justify-content-between  py-2">
-                <li class="nav-item"><a href="{{route('mechanic.dashboard')}}" class="nav-link">Dashboard</a></li>
-                <li class="nav-item"><a href="{{route('mechanic.createInvoice')}}" class="nav-link">Create Invoice</a>
-                </li>
-                <li class="nav-item"><a href="{{route('mechanic.edit-mechanic')}}" class="nav-link">Edit Profile</a>
-                </li>
-                <li class="nav-item"><a href="{{route('mechanic.logout')}}" class="nav-link">Log Out</a></li>
-            </ul>
-        </div>
-    </header>
-@endauth
+<body class="page-body {{$bodyClass ?? ''}}">
 @yield('content')
 <x-session/>
 <script src="{{mix('js/app.js')}}"></script>

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Invoice extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
 
    public const SORT_ASC = 'asc';
    public const SORT_DESC = 'desc';
@@ -29,6 +30,11 @@ class Invoice extends Model
         'total_price',
         'hourly_price'
     ];
+
+    public function routeNotificationForSlack($notification)
+    {
+
+    }
 
     /**
      * @param $query

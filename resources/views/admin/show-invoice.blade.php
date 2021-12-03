@@ -1,9 +1,7 @@
-@extends('admin.layout')
-@section('content')
-    <div class="container my-4 border border-dark">
-        <div class="my-4">
-            <div class="row justify-content-between">
-                <div class="col-md-6 col-sm-6 text-left">
+@extends('admin.sidebar')
+@section('main-content')
+            <div class="row">
+                <div class="col-md-6 text-left">
                     <h4><strong>Car</strong> Details</h4>
                     <ul class="list-unstyled">
                         <li><strong>Invoice No:</strong> {{$invoice['invoice_number']}}</li>
@@ -29,7 +27,7 @@
                     <thead>
                     <tr>
                         <th class="col-md-5">Item Part</th>
-                        <th>Quantity</th>
+                        <th class="col-md-2">Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
                     </tr>
@@ -57,7 +55,7 @@
                     <thead>
                     <tr>
                         <th class="col-md-5">Item Liquid</th>
-                        <th>Quantity</th>
+                        <th class="col-md-2">Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
                     </tr>
@@ -84,7 +82,7 @@
                     <thead>
                     <tr>
                         <th class="col-md-5">Item Work</th>
-                        <th>Quantity</th>
+                        <th class="col-md-2">Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
                     </tr>
@@ -118,12 +116,10 @@
                         {{$invoice['created_at']}}
                     </p>
                 </div>
-                <div class="col text-right">
+                <div class="col-md-12 text-right">
                     <ul class="list-unstyled">
                         <li><strong>Grand Total:</strong>{{$invoice['total_price'] . $currency}}</li>
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
 @endsection

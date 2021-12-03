@@ -78,7 +78,7 @@ class MechanicService
                 'email' => $request->email,
                 'garage_id' => $request->garageId
             ]);
-            return ResponseService::response(true, 'Mechanic is deleted');
+            return ResponseService::response(true, 'Mechanic updated');
         } catch (\Exception $e) {
             captureException($e);
         }

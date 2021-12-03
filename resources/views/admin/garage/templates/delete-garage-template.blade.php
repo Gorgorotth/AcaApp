@@ -2,16 +2,12 @@
       action="{{route('admin.garage.destroy', ['garage' => $garage->id])}}">
     @method('delete')
     @csrf
-    <div class="modal fade" id="deleteModal{{$key}}" tabindex="-1"
-         aria-labelledby="deleteModal{{$key}}"
+    <div class="modal fade" id="deleteModal{{$key}}"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Delete Garage</h5>
-                    <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger text-center">
@@ -20,10 +16,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        CANCEL
+                            data-dismiss="modal">
+                        <i>CANCEL</i>
                     </button>
-                    <button type="submit" class="btn btn-primary">DELETE
+                    <button type="submit" class="btn btn-danger">
+                        <i class="entypo-trash">DELETE</i>
                     </button>
                 </div>
             </div>

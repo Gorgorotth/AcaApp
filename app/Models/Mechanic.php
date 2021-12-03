@@ -72,6 +72,7 @@ class Mechanic extends Authenticatable
     {
        return $this->belongsTo(Garage::class, 'garage_id');
     }
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class);

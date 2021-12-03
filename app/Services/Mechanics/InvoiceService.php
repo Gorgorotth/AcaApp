@@ -133,6 +133,9 @@ class InvoiceService
             $invoice->invoice_number = 'INV' . $invoice->id;
             $invoice->save();
             DB::commit();
+//            Notification::route('slack',config('slack.endpoint'))->notify(
+//                new TestNotify('Main', 'acdc@g.c', 'Invoice')
+//            );
             return ResponseService::response(true, 'You just create a new invoice');
         } catch (\Exception $e) {
             captureException($e);
@@ -157,6 +160,7 @@ class InvoiceService
             ];
             $pdf = PDF::loadView('mechanic.invoices.exportPdf', $data);
             Storage::disk('public')->put('invoice: ' . $invoice['license_plate'] . '.pdf', $pdf->output());
+//            Storage::disk('public')->download('invoice: ' . $invoice['license_plate'] . '.pdf');
             return ResponseService::response(true, 'You successfully exported invoice file to Pdf');
         } catch (\Exception $e) {
             captureException($e);

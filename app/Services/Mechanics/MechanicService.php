@@ -29,10 +29,8 @@ class MechanicService
 
         } catch (\Exception $e) {
             captureException($e);
-
             return ResponseService::response(false, 'Something went wrong');
         }
-
     }
 
     /**

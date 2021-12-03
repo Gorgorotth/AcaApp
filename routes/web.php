@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Mechanic\MechanicController;
 use App\Http\Controllers\Mechanic\LoginController;
 
-
 Route::get('/', [LoginController::class, 'index'])->name('home');
 
 Route::post('login', [LoginController::class, 'store'])->name('mechanic.login');

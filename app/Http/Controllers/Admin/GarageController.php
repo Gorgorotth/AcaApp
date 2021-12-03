@@ -15,11 +15,11 @@ class GarageController extends Controller
     /**
      * @var MechanicService
      */
-    public $mechanicService;
+    protected $mechanicService;
     /**
      * @var GarageService
      */
-    public $garageService;
+    protected $garageService;
 
     /**
      * @param MechanicService $mechanicService
@@ -63,7 +63,6 @@ class GarageController extends Controller
             return redirect(route('admin.garage.index'))->with('success', $garage->getMessage());
         }
         return back()->with('error', $garage->getMessage());
-
     }
 
     /**
@@ -142,7 +141,7 @@ class GarageController extends Controller
     {
         $email = $this->garageService->restoreEmail($emailId);
         if ($email->getSuccess()) {
-            return back()->with('success', $email->getMessage());
+            return back()->with(['success' => $email->getMessage(), 'checkboxChecked' => 'checked']);
         }
         return back()->with('error', $email->getMessage());
     }

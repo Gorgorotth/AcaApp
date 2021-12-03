@@ -7,7 +7,6 @@ use App\Http\Requests\ChangeMechanicPasswordRequest;
 use App\Http\Requests\EditMechanicProfileRequest;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Models\Invoice;
-use App\Models\Mechanic;
 use App\Services\Mechanics\InvoiceService;
 use App\Services\Mechanics\MechanicService;
 
@@ -16,11 +15,11 @@ class MechanicController extends Controller
     /**
      * @var InvoiceService
      */
-    public $invoiceService;
+    protected $invoiceService;
     /**
      * @var MechanicService
      */
-    public $mechanicService;
+    protected $mechanicService;
 
     /**
      * @param InvoiceService $invoiceService
